@@ -29,11 +29,17 @@ bibtex_file = 'dblp.bib'  # BibTeX input and output file
 tex_files_directory = './'  # (sub)directory containing the .tex files
 ignore_tex_files = set()  # files within the directory that should be ignored
 
+from pathlib import Path
 import os, os.path
 import re
 import sys
 import time
-import urllib2
+try:
+    #For Python 2
+    import urllib2 as req
+except:
+    # If an error is seen, use the format supported in Python 3
+    import urllib.request as req
 
 re_bibtex_dblp_citations = re.compile(r'@.*\{(DBLP:[^,]*),')
 
@@ -41,7 +47,7 @@ known_keys = set([])
 
 if os.path.isfile(bibtex_file):
     print('Reading existing BibTeX file "%s"' % bibtex_file)
-    for i,line in enumerate(open(bibtex_file)):
+    for i,line in enumerate(open(bibtex_file,encoding="utf-8")):
         for match in re.finditer(re_bibtex_dblp_citations,line):
             for key in match.groups():
                 known_keys.add(key)
@@ -54,7 +60,7 @@ else:
 
 print('\nReading your LaTeX documents:')
 
-re_tex_citation = re.compile(r'(?:cite|fullciteown)\{([^\}]+)\}')
+re_tex_citation = re.compile(r'(?:cite|citep|citet|fullciteown|autocite|textcite)\{([^\}]+)\}')
 
 nondblp_keys = set([])
 dblp_keys = set([])
@@ -63,7 +69,7 @@ for dirpath,dirnames,filenames in os.walk(tex_files_directory):
     for filename in [f for f in filenames if f.endswith('.tex') and 
                                              not f in ignore_tex_files]:
         print(' * %s' % filename)
-        for i,line in enumerate(open(os.path.join(dirpath,filename))):
+        for i,line in enumerate(open(Path(dirpath)/filename,encoding="utf-8")):
             for match in re.finditer(re_tex_citation,line):
                 for group in match.groups():
                     for key in group.split(','):
@@ -95,10 +101,10 @@ fetched_keys = set([])
 
 for unknown_key in unknown_keys:
     print(' * %s' % unknown_key)
-    
+
     dblp_url = 'http://dblp.uni-trier.de/rec/bib2/%s.bib' % unknown_key[5:]
-    dblp_bibtex_file_content = urllib2.urlopen(dblp_url).read()
-    
+    dblp_bibtex_file_content = req.urlopen(dblp_url).read().decode('utf-8')   
+
     f = open(bibtex_file, 'a')
     for match in re.finditer(re_bibtex_items,dblp_bibtex_file_content):
         for dblp_bibtex_item in match.groups():
@@ -115,3 +121,4 @@ for unknown_key in unknown_keys:
     time.sleep(1)
 
 print('\nAll done. :-)')
+
