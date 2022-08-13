@@ -3,7 +3,7 @@
 #
 # This script collects all DBLP citation keys from all .tex files in a given 
 # directory and downloads missing BibTeX records from DBLP to a given BibTeX 
-# file. Tested with Python 3.8.
+# file. Tested with Python 3.10.
 #
 # Copyright (c) 2014 Sebastian Abshoff <sebastian@abshoff.it>
 #
