@@ -35,7 +35,7 @@ import re
 import sys
 import time
 try:
-    #For Python 2
+    # For Python 2
     import urllib2 as req
 except:
     # If an error is seen, use the format supported in Python 3
