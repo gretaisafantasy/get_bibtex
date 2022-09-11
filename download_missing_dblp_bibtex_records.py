@@ -47,7 +47,7 @@ known_keys = set([])
 
 if os.path.isfile(bibtex_file):
     print('Reading existing BibTeX file "%s"' % bibtex_file)
-    for i,line in enumerate(open(bibtex_file,encoding="utf-8")):
+    for i,line in enumerate(open(bibtex_file)):
         for match in re.finditer(re_bibtex_dblp_citations,line):
             for key in match.groups():
                 known_keys.add(key)
