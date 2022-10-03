@@ -184,9 +184,7 @@ def compile_bibtex_item_key():
 
 def find_missing_keys():
     """This function finds the missing bibliography keys"""
-    find_unknown_dblp_keys()
-    find_unknown_microsoft_keys()
-    find_unknown_springer_keys()
+    find_unknown_dblp_keys() and find_unknown_microsoft_keys() and find_unknown_springer_keys()
     print('\nFetching BibTeX records for missing keys from ....:')
     compile_bibtex_items()
     compile_bibtex_item_key()
