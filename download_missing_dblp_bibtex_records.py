@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8; -*-
 #
-# This script collects all DBLP citation keys from all .tex files in a given 
-# directory and downloads missing BibTeX records from DBLP to a given BibTeX 
-# file. Tested with Python 2.7.
+# This script collects all DBLP citation keys from all .tex files in a given
+# directory and downloads missing BibTeX records from DBLP to a given BibTeX
+# file. Tested with Python 3.10.
 #
 # Copyright (c) 2014 Sebastian Abshoff <sebastian@abshoff.it>
 #
@@ -16,7 +16,7 @@
 #
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,93 +25,255 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-bibtex_file = 'dblp.bib'  # BibTeX input and output file
+from pathlib import Path
+import urllib.request as req
+import sys
+import os
+import os.path
+import re
+
+dblp_bibtex_file = 'dblp.bib'  # DBLP BibTeX input and output file
+microsoft_bibtex_file = 'microsoft.bib'  # Microsoft Research BibTeX input and output file
+springer_bibtex_file = 'springer.bib'  # Springer BibTeX input and output file
 tex_files_directory = './'  # (sub)directory containing the .tex files
 ignore_tex_files = set()  # files within the directory that should be ignored
 
-import os, os.path
-import re
-import sys
-import time
-import urllib2
-
-re_bibtex_dblp_citations = re.compile(r'@.*\{(DBLP:[^,]*),')
-
 known_keys = set([])
-
-if os.path.isfile(bibtex_file):
-    print('Reading existing BibTeX file "%s"' % bibtex_file)
-    for i,line in enumerate(open(bibtex_file)):
-        for match in re.finditer(re_bibtex_dblp_citations,line):
-            for key in match.groups():
-                known_keys.add(key)
-    
-    print('The following DBLP keys have been found in your BibTeX file:')
-    for key in known_keys:
-        print(' * %s' % key)
-else:
-    print('BibTeX file "%s" not found, will try to create it.' % bibtex_file)
-
-print('\nReading your LaTeX documents:')
-
-re_tex_citation = re.compile(r'(?:cite|fullciteown)\{([^\}]+)\}')
-
-nondblp_keys = set([])
-dblp_keys = set([])
-
-for dirpath,dirnames,filenames in os.walk(tex_files_directory):
-    for filename in [f for f in filenames if f.endswith('.tex') and 
-                                             not f in ignore_tex_files]:
-        print(' * %s' % filename)
-        for i,line in enumerate(open(os.path.join(dirpath,filename))):
-            for match in re.finditer(re_tex_citation,line):
-                for group in match.groups():
-                    for key in group.split(','):
-                        if key.strip().startswith('DBLP:'):
-                            dblp_keys.add(key.strip())
-                        else:
-                            nondblp_keys.add(key.strip())
-
-print('\nThe following non-DBLP keys have been found in your LaTeX files:')
-for key in nondblp_keys:
-    print(' * %s' % key)
-
-print('\nThe following DBLP keys have been found in your LaTeX files:')
-for key in dblp_keys:
-    print(' * %s' % key)
-
-unknown_keys = dblp_keys-known_keys
-
-if unknown_keys == set():
-    print('\nYour BibTeX file is up to date, nothing needs to be fetched. :-)')
-    sys.exit(0)
-
-print('\nFetching BibTeX records for missing keys from DBLP:')
-
-re_bibtex_items = re.compile(r'(@[a-zA-Z]+\{[^@]*\n\})',re.DOTALL)
-re_bibtex_item_key = re.compile(r'@[a-zA-Z]+\{(DBLP\:[^,]+),\s*',re.DOTALL)
-
 fetched_keys = set([])
 
-for unknown_key in unknown_keys:
-    print(' * %s' % unknown_key)
-    
-    dblp_url = 'http://dblp.uni-trier.de/rec/bib2/%s.bib' % unknown_key[5:]
-    dblp_bibtex_file_content = urllib2.urlopen(dblp_url).read()
-    
-    f = open(bibtex_file, 'a')
-    for match in re.finditer(re_bibtex_items,dblp_bibtex_file_content):
-        for dblp_bibtex_item in match.groups():
-            key = re.match(re_bibtex_item_key,dblp_bibtex_item).group(1)
-            if not key in fetched_keys|known_keys:
-                f.write(dblp_bibtex_item)
-                f.write('\n\n')
-                fetched_keys.add(key)
-            else:
-                print('   (not adding %s to BibTeX file, it is already there)'
-                      % key)
-    f.close()
-    
-    time.sleep(1)
+known_dblp_keys = set([])
+dblp_keys = set([])
+nondblp_keys = set([])
+
+known_microsoft_keys = set([])
+microsoft_keys = set([])
+nonmicrosoft_keys = set([])
+
+known_springer_keys = set([])
+springer_keys = set([])
+nonspringer_keys = set([])
+
+
+def return_bibtex():
+    """This function compiles and returns the BibTeX file citations"""
+    re_bibtex_citations = re.compile(r'@.*\{([^,]*),')
+    return re_bibtex_citations
+
+
+def find_known_keys(bibliography):
+    """This function finds the known bibliography keys in the existing BibTeX file"""
+    print('\nThe following ... keys have been found in your BibTeX file:')
+    for key in bibliography:
+        print(' * %s' % key)
+
+
+def read_existing_file(bibtex_file):
+    """This function reads the existing ... BibTeX file or create a new one if it is not found"""
+    if os.path.isfile(bibtex_file):
+        print('\nReading existing BibTeX file "%s"' % bibtex_file)
+        for i, line in enumerate(open(bibtex_file)):
+            for match in re.finditer(return_bibtex(), line):
+                for key in match.groups():
+                    known_dblp_keys.add(key) and known_microsoft_keys.add(key) and known_springer_keys.add(key)
+        find_known_keys(known_dblp_keys) and find_known_keys(known_microsoft_keys) and find_known_keys(known_springer_keys)
+                
+    else:
+        print('\nBibTeX file "%s" not found, will try to create it.' % bibtex_file)
+
+def read_all_existing_files():
+    """This function compiles and reads all of the existing bibliography BibTex files"""
+    read_existing_file(dblp_bibtex_file)
+    read_existing_file(microsoft_bibtex_file)
+    read_existing_file(springer_bibtex_file)
+
+read_all_existing_files()
+
+
+def return_tex_citation():
+    """This function compiles and returns the LateX citations"""
+    re_tex_citation = re.compile(r'(?:cite|citep|citet|fullciteown|autocite|textcite)\{([^}]+)}')
+    return re_tex_citation
+
+
+def find_keys(bibliography_keys):
+    """This function finds the bibliography keys in the LaTeX files"""
+    print('\nThe following "%s" keys have been found in your LaTeX files:')
+    for key in bibliography_keys:
+        print(' * %s' % key)
+
+
+def find_all_keys():
+    """This function calls on the previous functions of finding the keys of all the bibliographies"""
+    find_keys(nondblp_keys)
+    find_keys(dblp_keys)
+    find_keys(nonmicrosoft_keys)
+    find_keys(microsoft_keys)
+    find_keys(nonspringer_keys)
+    find_keys(springer_keys)
+
+
+def read_latex():
+    """This function reads the LateX documents and adds the corresponding keys"""
+    print('\nReading your LaTeX documents:')
+
+    return_tex_citation()
+
+    for dirpath, dirnames, filenames in os.walk(tex_files_directory):
+        for filename in [f for f in filenames if f.endswith('.tex') and
+                         f not in ignore_tex_files]:
+            print(' * %s' % filename)
+            for i, line in enumerate(open(Path(dirpath) / filename, encoding="utf-8")):
+                for match in re.finditer(return_tex_citation(), line):
+                    for group in match.groups():
+                        for key in group.split(','):
+                            if key.strip().startswith('DBLP:'):
+                                dblp_keys.add(key.strip())
+                            else:
+                                nondblp_keys.add(key.strip())
+                            if key.strip().startswith('Microsoft:'):
+                                microsoft_keys.add(key.strip())
+                            else:
+                                nonmicrosoft_keys.add(key.strip())
+                            if key.strip().startswith('Springer:'):
+                                springer_keys.add(key.strip())
+                            else:
+                                nonspringer_keys.add(key.strip())
+    find_all_keys()
+
+
+read_latex()
+
+def find_unknown_dblp_keys():
+    """This function finds the unknown DBLP keys"""
+    unknown_dblp_keys = dblp_keys - known_dblp_keys
+    if unknown_dblp_keys == set():
+        print('\nYour DBLP BibTeX file is up to date, nothing needs to be fetched. :-)')
+        sys.exit(0)
+    return unknown_dblp_keys
+
+
+def find_unknown_microsoft_keys():
+    """This function finds the unknown Microsoft Research keys"""
+    unknown_microsoft_keys = microsoft_keys - known_microsoft_keys
+    if unknown_microsoft_keys == set():
+        print('\nYour Microsoft Research BibTeX file is up to date, nothing needs to be fetched. :-)')
+        sys.exit(0)
+    return unknown_microsoft_keys
+
+
+def find_unknown_springer_keys():
+    """This function finds the unknown Springer keys"""
+    unknown_springer_keys = springer_keys - known_springer_keys
+    if unknown_springer_keys == set():
+        print('\nYour Springer BibTeX file is up to date, nothing needs to be fetched. :-)')
+        sys.exit(0)
+    return unknown_springer_keys
+
+
+def compile_bibtex_items():
+    """This function compiles the BibTeX items"""
+    re_bibtex_items = re.compile(r'(@[a-zA-Z]+\{[^@]*\n})', re.DOTALL)
+    return re_bibtex_items
+
+
+def compile_bibtex_item_key():
+    """This function compiles the BibTeX item key"""
+    re_bibtex_item_key = re.compile(r'@[a-zA-Z]+\{([^,]+),\s*', re.DOTALL)
+    return re_bibtex_item_key
+
+
+def find_missing_keys():
+    """This function finds the missing bibliography keys"""
+    find_unknown_dblp_keys()
+    find_unknown_microsoft_keys()
+    find_unknown_springer_keys()
+    print('\nFetching BibTeX records for missing keys from ....:')
+    compile_bibtex_items()
+    compile_bibtex_item_key()
+
+
+
+def open_dblp_file():
+    """This function opens the DBLP BibTeX file and writes it to our BibTeX file if it is not already there"""
+    find_missing_keys()
+
+    for unknown_dblp_key in find_unknown_dblp_keys():
+        print(' * %s' % unknown_dblp_key)
+
+        dblp_url = 'https://dblp.org/rec/%s.bib' % unknown_dblp_key[5:]
+        dblp_bibtex_file_content = req.urlopen(dblp_url).read().decode('utf-8')
+
+        f = open(dblp_bibtex_file, 'a')
+        for match in re.finditer(compile_bibtex_items(), dblp_bibtex_file_content):
+            for dblp_bibtex_item in match.groups():
+                key = re.match(compile_bibtex_item_key(), dblp_bibtex_item).group(1)
+                if key not in fetched_keys | known_dblp_keys:
+                    f.write(dblp_bibtex_item)
+                    f.write('\n\n')
+                    fetched_keys.add(key)
+                else:
+                    print('   (not adding %s to DBLP BibTeX file, it is already there)'
+                          % key)
+        f.close()
+
+
+def open_microsoft_file():
+    """This function opens the Microsoft Research BibTeX file and writes it to our BibTeX file if it is not already there"""
+    find_missing_keys()
+
+    for unknown_microsoft_key in find_unknown_microsoft_keys():
+        print(' * %s' % unknown_microsoft_key)
+
+        microsoft_url = 'https://www.microsoft.com/en-us/research/publication/%s/bibtex/' % unknown_microsoft_key[10:]
+        microsoft_bibtex_file_content = req.urlopen(microsoft_url).read().decode('utf-8')
+
+        f = open(microsoft_bibtex_file, 'a')
+        for match in re.finditer(compile_bibtex_items(), microsoft_bibtex_file_content):
+            for microsoft_bibtex_item in match.groups():
+                key = re.match(compile_bibtex_item_key(), microsoft_bibtex_item).group(1)
+                if key not in fetched_keys | known_microsoft_keys:
+                    f.write(microsoft_bibtex_item)
+                    f.write('\n\n')
+                    fetched_keys.add(key)
+                else:
+                    print('   (not adding %s to Microsoft Research BibTeX file, it is already there)'
+                          % key)
+
+        f.close()
+
+
+def open_springer_file():
+    """This function opens the Springer BibTeX file and writes it to our BibTeX file if it is not already there"""
+    find_missing_keys()
+
+    for unknown_springer_key in find_unknown_springer_keys():
+        print(' * %s' % unknown_springer_key)
+
+        springer_url = 'https://citation-needed.springer.com/v2/references/10.1007/%s' % unknown_springer_key[9:]
+        springer_bibtex_file_content = req.urlopen(springer_url).read().decode('utf-8')
+
+        f = open(springer_bibtex_file, 'a')
+        for match in re.finditer(compile_bibtex_items(), springer_bibtex_file_content):
+            for springer_bibtex_item in match.groups():
+                key = re.match(compile_bibtex_item_key(), springer_bibtex_item).group(1)
+                if key not in fetched_keys | known_springer_keys:
+                    f.write(springer_bibtex_item)
+                    f.write('\n\n')
+                    fetched_keys.add(key)
+                else:
+                    print('   (not adding %s to Springer BibTeX file, it is already there)'
+                          % key)
+
+        f.close()
+
+
+def open_file():
+    """This function calls on the previous functions of opening the BibTeX file and writing it to our BibTeX file"""
+    open_dblp_file()
+    open_microsoft_file()
+    open_springer_file()
+
+open_file()
+
 
 print('\nAll done. :-)')
