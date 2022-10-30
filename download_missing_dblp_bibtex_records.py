@@ -163,6 +163,7 @@ def compile_bibtex_item_key():
 
 
 def find_missing_keys(name):
+    """This function finds the missing keys from the bibliography"""
     print(f'\nFetching BibTeX records for missing keys from {name}:')
     compile_bibtex_items()
     compile_bibtex_item_key()
