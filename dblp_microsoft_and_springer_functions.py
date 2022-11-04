@@ -131,9 +131,12 @@ def read_latex():
     return_tex_citation()
 
     for dirpath, dirnames, filenames in os.walk(TEX_FILES_DIRECTORY):
+        exclude = set([])
+        dirnames[:] = [d for d in set(dirnames)-exclude]
+
         for filename in [f for f in filenames if f.endswith('.tex') and
                          f not in ignore_tex_files]:
-            print(' * %s' % filename)
+            print (f' {filename}')
             for i, line in enumerate(open(Path(dirpath) / filename, encoding="utf-8")):
                 for match in re.finditer(return_tex_citation(), line):
                     for group in match.groups():
@@ -209,12 +212,10 @@ def find_unknown_springer_keys():
 
 def open_dblp_file():
     """This function opens the DBLP BibTeX file and writes it to our BibTeX file if it is not already there"""
-    find_unknown_dblp_keys()
-
     fetched_dblp_keys = set([])
 
     for unknown_dblp_key in find_unknown_dblp_keys():
-        print(' * %s' % unknown_dblp_key)
+        print (f' {unknown_dblp_key}')
 
         dblp_url = 'https://dblp.org/rec/%s.bib' % unknown_dblp_key[5:]
         dblp_bibtex_file_content = req.urlopen(dblp_url).read().decode('utf-8')
@@ -235,12 +236,10 @@ def open_dblp_file():
 
 def open_microsoft_file():
     """This function opens the Microsoft Research BibTeX file and writes it to our BibTeX file if it is not already there"""
-    find_unknown_microsoft_keys()
-
     fetched_microsoft_keys = set([])
 
     for unknown_microsoft_key in find_unknown_microsoft_keys():
-        print(' * %s' % unknown_microsoft_key)
+        print (f' {unknown_microsoft_key}')
 
         microsoft_url = 'https://www.microsoft.com/en-us/research/publication/%s/bibtex/' % unknown_microsoft_key[10:]
         microsoft_bibtex_file_content = req.urlopen(microsoft_url).read().decode('utf-8')
@@ -261,12 +260,10 @@ def open_microsoft_file():
 
 def open_springer_file():
     """This function opens the Springer BibTeX file and writes it to our BibTeX file if it is not already there"""
-    find_unknown_springer_keys()
-
     fetched_springer_keys = set([])
 
     for unknown_springer_key in find_unknown_springer_keys():
-        print(' * %s' % unknown_springer_key)
+        print (f' {unknown_springer_key}')
 
         springer_url = 'https://citation-needed.springer.com/v2/references/10.1007/%s' % unknown_springer_key[9:]
         springer_bibtex_file_content = req.urlopen(springer_url).read().decode('utf-8')
