@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# !/usr/bin/env python
 # -*- coding: utf-8; -*-
 #
 # This script collects all DBLP citation keys from all .tex files in a given
@@ -33,7 +33,7 @@ import os.path
 import re
 import argparse
 
-tex_files_directory = './'  # (sub)directory containing the .tex files
+TEX_FILES_DIRECTORY = './'  # (sub)directory containing the .tex files
 ignore_tex_files = set()  # files within the directory that should be ignored
 
 known_keys = set([])
@@ -49,7 +49,7 @@ nonmicrosoft_keys = set([])
 known_springer_keys = set([])
 springer_keys = set([])
 nonspringer_keys = set([])
-    
+
 parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
 parser.add_argument('--d', default='dblp.bib', type=str, help='DBLP BibTeX input and output file; always ends in .bib')
 parser.add_argument('--m', default='microsoft.bib', type=str, help='Microsoft BibTeX input and output file; always ends in .bib')
@@ -72,7 +72,7 @@ def find_known_keys(name, bibliography):
     """This function finds the known bibliography keys in the existing BibTeX file"""
     print(f'\nThe following {name} keys have been found in your BibTeX file:')
     for key in bibliography:
-        print(' * %s' % key)
+        print (f' {key}')
 
 
 def read_existing_file(bibtex_file):
@@ -86,7 +86,7 @@ def read_existing_file(bibtex_file):
                     known_microsoft_keys.add(key)
                     known_springer_keys.add(key)
         find_known_keys('DBLP', known_dblp_keys) and find_known_keys('Microsoft', known_microsoft_keys) and find_known_keys('Springer', known_springer_keys)
-                
+
     else:
         print('\nBibTeX file "%s" not found, will try to create it.' % bibtex_file)
 
@@ -111,7 +111,7 @@ def find_keys(name, bibliography_keys):
     """This function finds the bibliography keys in the LaTeX files"""
     print(f"\nThe following {name} keys have been found in your LaTeX files:")
     for key in bibliography_keys:
-        print(' * %s' % key)
+        print (f' {key}')
 
 
 def find_all_keys():
@@ -122,7 +122,7 @@ def find_all_keys():
     find_keys('Microsoft', microsoft_keys)
     find_keys('non-Springer', nonspringer_keys)
     find_keys('Springer', springer_keys)
-    
+
 
 def read_latex():
     """This function reads the LateX documents and adds the corresponding keys"""
@@ -130,7 +130,7 @@ def read_latex():
 
     return_tex_citation()
 
-    for dirpath, dirnames, filenames in os.walk(tex_files_directory):
+    for dirpath, dirnames, filenames in os.walk(TEX_FILES_DIRECTORY):
         for filename in [f for f in filenames if f.endswith('.tex') and
                          f not in ignore_tex_files]:
             print(' * %s' % filename)
@@ -191,7 +191,7 @@ def find_unknown_microsoft_keys():
     """This function finds the unknown Microsoft Research keys"""
     unknown_microsoft_keys = microsoft_keys - known_microsoft_keys
     if unknown_microsoft_keys == set():
-        print('\nYour Microsoft Research BibTeX file is up to date, nothing needs to be fetched. :-)')       
+        print('\nYour Microsoft Research BibTeX file is up to date, nothing needs to be fetched. :-)')
     else:
         find_missing_keys('Microsoft')
     return unknown_microsoft_keys
@@ -290,7 +290,7 @@ def open_file():
     open_dblp_file()
     open_microsoft_file()
     open_springer_file()
-    
+
 
 open_file()
 
