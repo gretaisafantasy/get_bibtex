@@ -33,9 +33,6 @@ import os.path
 import re
 import argparse
 
-dblp_bibtex_file = 'dblp.bib'  # DBLP BibTeX input and output file
-microsoft_bibtex_file = 'microsoft.bib'  # Microsoft Research BibTeX input and output file
-springer_bibtex_file = 'springer.bib'  # Springer BibTeX input and output file
 tex_files_directory = './'  # (sub)directory containing the .tex files
 ignore_tex_files = set()  # files within the directory that should be ignored
 
@@ -53,6 +50,17 @@ known_springer_keys = set([])
 springer_keys = set([])
 nonspringer_keys = set([])
     
+parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
+parser.add_argument('--d', default='dblp.bib', type=str, help='DBLP BibTeX input and output file; always ends in .bib')
+parser.add_argument('--m', default='microsoft.bib', type=str, help='Microsoft BibTeX input and output file; always ends in .bib')
+parser.add_argument('--s', default='springer.bib', type=str, help='Springer BibTeX input and output file; always ends in .bib')
+args = parser.parse_args()
+dblp_bibtex_file = args.d
+microsoft_bibtex_file = args.m
+springer_bibtex_file = args.s
+print("DBLP BibTeX file:", dblp_bibtex_file)
+print("Microsoft BibTeX file:", microsoft_bibtex_file)
+print("Springer BibTeX file:", springer_bibtex_file)
 
 def return_bibtex():
     """This function compiles and returns the BibTeX file citations"""
