@@ -27,7 +27,6 @@
 
 from pathlib import Path
 import urllib.request as req
-import sys
 import os
 import os.path
 import re
