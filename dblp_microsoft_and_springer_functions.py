@@ -78,7 +78,7 @@ def read_existing_file(bibtex_file):
     """This function reads the existing BibTeX file or create a new one if it is not found"""
     if os.path.isfile(bibtex_file):
         print(f'\nReading existing BibTeX file {bibtex_file}')
-        for i, line in enumerate(open(bibtex_file)):
+        for _, line in enumerate(open(bibtex_file)):
             for match in re.finditer(return_bibtex(), line):
                 for key in match.groups():
                     known_dblp_keys.add(key)
@@ -136,7 +136,7 @@ def read_latex():
         for filename in [f for f in filenames if f.endswith('.tex') and
                          f not in ignore_tex_files]:
             print (f' {filename}')
-            for i, line in enumerate(open(Path(dirpath) / filename, encoding="utf-8")):
+            for _, line in enumerate(open(Path(dirpath) / filename, encoding="utf-8")):
                 for match in re.finditer(return_tex_citation(), line):
                     for group in match.groups():
                         for key in group.split(','):
