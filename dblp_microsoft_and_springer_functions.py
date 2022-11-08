@@ -218,18 +218,19 @@ def open_dblp_file():
         dblp_url = f'https://dblp.org/rec/{unknown_dblp_key[5:]}.bib'
         dblp_bibtex_file_content = req.urlopen(dblp_url).read().decode('utf-8')
 
-        file = open(dblp_bibtex_file, 'a')
-        for match in re.finditer(compile_bibtex_items(), dblp_bibtex_file_content):
-            for dblp_bibtex_item in match.groups():
-                key = re.match(compile_bibtex_item_key(), dblp_bibtex_item).group(1)
-                if key not in fetched_dblp_keys | known_dblp_keys:
-                    file.write(dblp_bibtex_item)
-                    file.write('\n\n')
-                    fetched_dblp_keys.add(key)
-                else:
-                    print(f'(not adding {key} to DBLP BibTeX file, it is already there.)')
-        file.close()
+        with open(dblp_bibtex_file, 'a', encoding="utf8") as file:
+            for match in re.finditer(compile_bibtex_items(), dblp_bibtex_file_content):
+                for dblp_bibtex_item in match.groups():
+                    key = re.match(compile_bibtex_item_key(), dblp_bibtex_item).group(1)
+                    if key not in fetched_dblp_keys | known_dblp_keys:
+                        file.write(dblp_bibtex_item)
+                        file.write('\n\n')
+                        fetched_dblp_keys.add(key)
+                    else:
+                        print(f'(not adding {key} to DBLP BibTeX file, it is already there.)')
 
+        file.close()
+        
 
 def open_microsoft_file():
     """This function opens the Microsoft Research BibTeX file and writes it to our BibTeX file if it is not already there"""
@@ -241,16 +242,17 @@ def open_microsoft_file():
         microsoft_url = f'https://www.microsoft.com/en-us/research/publication/{unknown_microsoft_key[10:]}/bibtex/'
         microsoft_bibtex_file_content = req.urlopen(microsoft_url).read().decode('utf-8')
 
-        file = open(microsoft_bibtex_file, 'a')
-        for match in re.finditer(compile_bibtex_items(), microsoft_bibtex_file_content):
-            for microsoft_bibtex_item in match.groups():
-                key = re.match(compile_bibtex_item_key(), microsoft_bibtex_item).group(1)
-                if key not in fetched_microsoft_keys | known_microsoft_keys:
-                    file.write(microsoft_bibtex_item)
-                    file.write('\n\n')
-                    fetched_microsoft_keys.add(key)
-                else:
-                    print(f'(not adding {key} to Microsoft BibTeX file, it is already there.)')
+        with open(microsoft_bibtex_file, 'a', encoding="utf8") as file:
+            for match in re.finditer(compile_bibtex_items(), microsoft_bibtex_file_content):
+                for microsoft_bibtex_item in match.groups():
+                    key = re.match(compile_bibtex_item_key(), microsoft_bibtex_item).group(1)
+                    if key not in fetched_microsoft_keys | known_microsoft_keys:
+                        file.write(microsoft_bibtex_item)
+                        file.write('\n\n')
+                        fetched_microsoft_keys.add(key)
+                    else:
+                        print(f'(not adding {key} to Microsoft BibTeX file, it is already there.)')
+
         file.close()
 
 
@@ -264,16 +266,17 @@ def open_springer_file():
         springer_url = f'https://citation-needed.springer.com/v2/references/10.1007/{unknown_springer_key[9:]}'
         springer_bibtex_file_content = req.urlopen(springer_url).read().decode('utf-8')
 
-        file = open(springer_bibtex_file, 'a')
-        for match in re.finditer(compile_bibtex_items(), springer_bibtex_file_content):
-            for springer_bibtex_item in match.groups():
-                key = re.match(compile_bibtex_item_key(), springer_bibtex_item).group(1)
-                if key not in fetched_springer_keys | known_springer_keys:
-                    file.write(springer_bibtex_item)
-                    file.write('\n\n')
-                    fetched_springer_keys.add(key)
-                else:
-                    print(f'(not adding {key} to Springer BibTeX file, it is already there.)')
+        with open(springer_bibtex_file, 'a', encoding="utf8") as file:
+            for match in re.finditer(compile_bibtex_items(), springer_bibtex_file_content):
+                for springer_bibtex_item in match.groups():
+                    key = re.match(compile_bibtex_item_key(), springer_bibtex_item).group(1)
+                    if key not in fetched_springer_keys | known_springer_keys:
+                        file.write(springer_bibtex_item)
+                        file.write('\n\n')
+                        fetched_springer_keys.add(key)
+                    else:
+                        print(f'(not adding {key} to Springer BibTeX file, it is already there.)')
+
         file.close()
 
 
