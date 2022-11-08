@@ -84,7 +84,6 @@ def read_existing_file(bibtex_file):
                     known_dblp_keys.add(key)
                     known_microsoft_keys.add(key)
                     known_springer_keys.add(key)
-        find_known_keys('DBLP', known_dblp_keys) and find_known_keys('Microsoft', known_microsoft_keys) and find_known_keys('Springer', known_springer_keys)
 
     else:
         print(f'\nBibTeX file {bibtex_file} not found, will try to create it.')
@@ -214,9 +213,9 @@ def open_dblp_file():
     fetched_dblp_keys = set([])
 
     for unknown_dblp_key in find_unknown_dblp_keys():
-        print (f'{unknown_dblp_key}')
+        print (f' {unknown_dblp_key}')
 
-        dblp_url = 'https://dblp.org/rec/%s.bib' % unknown_dblp_key[5:]
+        dblp_url = f'https://dblp.org/rec/{unknown_dblp_key[5:]}.bib'
         dblp_bibtex_file_content = req.urlopen(dblp_url).read().decode('utf-8')
 
         file = open(dblp_bibtex_file, 'a')
@@ -237,9 +236,9 @@ def open_microsoft_file():
     fetched_microsoft_keys = set([])
 
     for unknown_microsoft_key in find_unknown_microsoft_keys():
-        print (f'{unknown_microsoft_key}')
+        print (f' {unknown_microsoft_key}')
 
-        microsoft_url = 'https://www.microsoft.com/en-us/research/publication/%s/bibtex/' % unknown_microsoft_key[10:]
+        microsoft_url = f'https://www.microsoft.com/en-us/research/publication/{unknown_microsoft_key[10:]}/bibtex/'
         microsoft_bibtex_file_content = req.urlopen(microsoft_url).read().decode('utf-8')
 
         file = open(microsoft_bibtex_file, 'a')
@@ -260,9 +259,9 @@ def open_springer_file():
     fetched_springer_keys = set([])
 
     for unknown_springer_key in find_unknown_springer_keys():
-        print (f'{unknown_springer_key}')
+        print (f' {unknown_springer_key}')
 
-        springer_url = 'https://citation-needed.springer.com/v2/references/10.1007/%s' % unknown_springer_key[9:]
+        springer_url = f'https://citation-needed.springer.com/v2/references/10.1007/{unknown_springer_key[9:]}'
         springer_bibtex_file_content = req.urlopen(springer_url).read().decode('utf-8')
 
         file = open(springer_bibtex_file, 'a')
