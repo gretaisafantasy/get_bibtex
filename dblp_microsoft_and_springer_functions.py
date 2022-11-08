@@ -57,6 +57,8 @@ args = parser.parse_args()
 dblp_bibtex_file = args.d
 microsoft_bibtex_file = args.m
 springer_bibtex_file = args.s
+
+# Delete???
 print("DBLP BibTeX file:", dblp_bibtex_file)
 print("Microsoft BibTeX file:", microsoft_bibtex_file)
 print("Springer BibTeX file:", springer_bibtex_file)
@@ -78,7 +80,7 @@ def read_existing_file(bibtex_file):
     """This function reads the existing BibTeX file or create a new one if it is not found"""
     if os.path.isfile(bibtex_file):
         print(f'\nReading existing BibTeX file {bibtex_file}')
-        for _, line in enumerate(open(bibtex_file)):
+        for _, line in enumerate(open(bibtex_file, encoding="utf-8")):
             for match in re.finditer(return_bibtex(), line):
                 for key in match.groups():
                     known_dblp_keys.add(key)
