@@ -190,6 +190,7 @@ def find_unknown_keys(name, bibtex_file):
 
 find_unknown_keys('DBLP', dblp_bibtex_file)
 
+
 def find_unknown_dblp_keys():
     """This function finds the unknown DBLP keys"""
     unknown_dblp_keys = dblp_keys - known_dblp_keys
