@@ -178,6 +178,18 @@ def find_missing_keys(name):
     compile_bibtex_item_key()
 
 
+def find_unknown_keys(name, bibtex_file):
+    unknown_name_keys = name_keys - known_name_keys
+    if not os.path.isfile(bibtex_file) and unknown_name_keys == set():
+        print (f'\nYou do not have a {name} BibTeX file, nothing needs to be fetched. :-)')
+    elif unknown_name_keys == set():
+        print(f'\nYour {name} BibTeX file is up to date, nothing needs to be fetched. :-)')
+    else:
+        find_missing_keys(name)
+    return unknown_name_keys
+
+find_unknown_keys('DBLP', dblp_bibtex_file)
+
 def find_unknown_dblp_keys():
     """This function finds the unknown DBLP keys"""
     unknown_dblp_keys = dblp_keys - known_dblp_keys
