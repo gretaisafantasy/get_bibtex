@@ -90,7 +90,7 @@ def read_all_existing_files():
     read_existing_file(dblp_bibtex_file)
     read_existing_file(microsoft_bibtex_file)
     read_existing_file(springer_bibtex_file)
-    print(f'\nThe following DBLP, Microsoft Research, and Springer keys have been found in your BibTeX file(s):')
+    print('\nThe following DBLP, Microsoft Research, and Springer keys have been found in your BibTeX file(s):')
     for key in known_keys:
         print (f'{key}')
 
