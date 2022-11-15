@@ -46,6 +46,10 @@ nonmicrosoft_keys = set([])
 springer_keys = set([])
 nonspringer_keys = set([])
 
+unknown_dblp_keys = dblp_keys - known_keys
+unknown_microsoft_keys = microsoft_keys - known_keys
+unknown_springer_keys = springer_keys - known_keys
+
 parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
 parser.add_argument('--d', default='dblp.bib', type=str, help='DBLP BibTeX input and output file; always ends in .bib and only accepts strings.')
 parser.add_argument('--m', default='microsoft.bib', type=str, help='Microsoft BibTeX input and output file; always ends in .bib and only accepts strings.')
@@ -176,8 +180,8 @@ def find_missing_keys(name):
     compile_bibtex_item_key()
 
 
-def find_unknown_keys(name, bibtex_file):
-    unknown_name_keys = name_keys - known_keys
+def find_unknown_keys(bibtex_file, unknown_name_keys, name):
+    """This function finds the unknown bibliography keys"""
     if not os.path.isfile(bibtex_file) and unknown_name_keys == set():
         print (f'\nYou do not have a {name} BibTeX file, nothing needs to be fetched. :-)')
     elif unknown_name_keys == set():
@@ -186,50 +190,12 @@ def find_unknown_keys(name, bibtex_file):
         find_missing_keys(name)
     return unknown_name_keys
 
-find_unknown_keys('DBLP', dblp_bibtex_file)
-
-
-def find_unknown_dblp_keys():
-    """This function finds the unknown DBLP keys"""
-    unknown_dblp_keys = dblp_keys - known_keys
-    if not os.path.isfile(dblp_bibtex_file) and unknown_dblp_keys == set():
-        print ('\nYou do not have a DBLP BibTeX file, nothing needs to be fetched. :-)')
-    elif unknown_dblp_keys == set():
-        print('\nYour DBLP BibTeX file is up to date, nothing needs to be fetched. :-)')
-    else:
-        find_missing_keys('DBLP')
-    return unknown_dblp_keys
-
-
-def find_unknown_microsoft_keys():
-    """This function finds the unknown Microsoft Research keys"""
-    unknown_microsoft_keys = microsoft_keys - known_keys
-    if not os.path.isfile(microsoft_bibtex_file) and unknown_microsoft_keys == set():
-        print ('\nYou do not have a Microsoft Research BibTeX file, nothing needs to be fetched. :-)')
-    elif unknown_microsoft_keys == set():
-        print('\nYour Microsoft Research BibTeX file is up to date, nothing needs to be fetched. :-)')
-    else:
-        find_missing_keys('Microsoft')
-    return unknown_microsoft_keys
-
-
-def find_unknown_springer_keys():
-    """This function finds the unknown Springer keys"""
-    unknown_springer_keys = springer_keys - known_keys
-    if not os.path.isfile(springer_bibtex_file) and unknown_springer_keys == set():
-        print ('\nYou do not have a Springer BibTeX file, nothing needs to be fetched. :-)')
-    elif unknown_springer_keys == set():
-        print('\nYour Springer BibTeX file is up to date, nothing needs to be fetched. :-)')
-    else:
-        find_missing_keys('Springer')
-    return unknown_springer_keys
-
 
 def open_dblp_file():
     """This function opens the DBLP BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_dblp_keys = set([])
 
-    for unknown_dblp_key in find_unknown_dblp_keys():
+    for unknown_dblp_key in find_unknown_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
         print (f'{unknown_dblp_key}')
 
         dblp_url = f'https://dblp.org/rec/{unknown_dblp_key[5:]}.bib'
@@ -252,7 +218,7 @@ def open_microsoft_file():
     """This function opens the Microsoft Research BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_microsoft_keys = set([])
 
-    for unknown_microsoft_key in find_unknown_microsoft_keys():
+    for unknown_microsoft_key in find_unknown_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft'):
         print (f'{unknown_microsoft_key}')
 
         microsoft_url = f'https://www.microsoft.com/en-us/research/publication/{unknown_microsoft_key[10:]}/bibtex/'
@@ -275,7 +241,7 @@ def open_springer_file():
     """This function opens the Springer BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_springer_keys = set([])
 
-    for unknown_springer_key in find_unknown_springer_keys():
+    for unknown_springer_key in find_unknown_keys(springer_bibtex_file, springer_keys, 'Springer'):
         print (f'{unknown_springer_key}')
 
         springer_url = f'https://citation-needed.springer.com/v2/references/10.1007/{unknown_springer_key[9:]}'
