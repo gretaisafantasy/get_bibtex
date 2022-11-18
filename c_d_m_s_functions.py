@@ -36,21 +36,15 @@ TEX_FILES_DIRECTORY = './'  # (sub)directory containing the .tex files
 ignore_tex_files = set()  # files within the directory that should be ignored
 
 known_keys = set([])
+unused_keys = set([])
 
 cogprints_keys = set([])
-noncogprints_keys = set([])
 
 dblp_keys = set([])
-nondblp_keys = set([])
-
-dblp_keys = set([])
-nondblp_keys = set([])
 
 microsoft_keys = set([])
-nonmicrosoft_keys = set([])
 
 springer_keys = set([])
-nonspringer_keys = set([])
 
 unknown_cogprints_keys = cogprints_keys - known_keys
 unknown_dblp_keys = dblp_keys - known_keys
@@ -118,14 +112,11 @@ def find_keys(name, bibliography_keys):
 
 def find_all_keys():
     """This function calls on the previous functions of finding the keys of all the bibliographies"""
-    find_keys('non-Cogprints', noncogprints_keys)
     find_keys('Cogprints', cogprints_keys)
-    find_keys('non-DBLP', nondblp_keys)
     find_keys('DBLP', dblp_keys)
-    find_keys('non-Microsoft', nonmicrosoft_keys)
     find_keys('Microsoft', microsoft_keys)
-    find_keys('non-Springer', nonspringer_keys)
     find_keys('Springer', springer_keys)
+    find_keys('unused', unused_keys)
 
 
 def read_latex():
@@ -148,20 +139,14 @@ def read_latex():
                             for key in group.split(','):
                                 if key.strip().startswith('Cogprints:'):
                                     cogprints_keys.add(key.strip())
-                                else:
-                                    noncogprints_keys.add(key.strip())
-                                if key.strip().startswith('DBLP:'):
+                                elif key.strip().startswith('DBLP:'):
                                     dblp_keys.add(key.strip())
-                                else:
-                                    nondblp_keys.add(key.strip())
-                                if key.strip().startswith('Microsoft:'):
+                                elif key.strip().startswith('Microsoft:'):
                                     microsoft_keys.add(key.strip())
-                                else:
-                                    nonmicrosoft_keys.add(key.strip())
-                                if key.strip().startswith('Springer:'):
+                                elif key.strip().startswith('Springer:'):
                                     springer_keys.add(key.strip())
                                 else:
-                                    nonspringer_keys.add(key.strip())
+                                    unused_keys.add(key.strip())
 
     find_all_keys()
 
