@@ -184,18 +184,31 @@ def find_unknown_keys(bibtex_file, unknown_name_keys, name):
     return unknown_name_keys
 
 
+def simplify(name_bibtex_file_content):
+    """This function ..."""
+    with open(cogprints_bibtex_file, 'a', encoding="utf8") as file:
+        for match in re.finditer(compile_bibtex_items(), name_bibtex_file_content):
+            for cogprints_bibtex_item in match.groups():
+                    key = re.match(compile_bibtex_item_key(), cogprints_bibtex_item).group(1)
+                    if key not in fetched_cogprints_keys | known_keys:
+                        file.write(cogprints_bibtex_item)
+                        file.write('\n\n')
+                        fetched_cogprints_keys.add(key)
+                    else:
+                        print(f'(not adding {key} to Cogprints BibTeX file, it is already there.)')
+
+
 def open_cogprints_key():
+    """This function ..."""
     for unknown_cogprints_key in find_unknown_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
         print (f'{unknown_cogprints_key}')
+    
+        cogprints_url = f'https://web-archive.southampton.ac.uk/cogprints.org/{unknown_cogprints_key[10:]}.bib.html'
 
-
-def open_bibliography_file():
-    open_cogprints_key()
-
-
-
-open_bibliography_file()
-
+        with req.urlopen(cogprints_url) as response:
+            cogprints_bibtex_file_content = response.read().decode('utf-8')
+                            
+open_cogprints_key()
 
 
 def open_dblp_file():
@@ -269,7 +282,6 @@ def open_springer_file():
 
 def open_file():
     """This function calls on the previous functions of opening the BibTeX file and writing it to our BibTeX file"""
-    open_cogprints_file()
     open_dblp_file()
     open_microsoft_file()
     open_springer_file()
