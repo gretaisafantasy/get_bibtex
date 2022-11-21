@@ -39,6 +39,7 @@ known_keys = set([])
 unused_keys = set([])
 
 cogprints_keys = set([])
+fetched_cogprints_keys = set([])
 
 dblp_keys = set([])
 
@@ -150,7 +151,6 @@ def read_latex():
 
     find_all_keys()
 
-
 read_latex()
 
 
@@ -184,31 +184,18 @@ def find_unknown_keys(bibtex_file, unknown_name_keys, name):
     return unknown_name_keys
 
 
-def open_bibliography_file():
-
-
-
-def open_cogprints_file():
-    """This function opens the Cogprints BibTeX file and writes it to our BibTeX file if it is not already there"""
-    fetched_cogprints_keys = set([])
-
+def open_cogprints_key():
     for unknown_cogprints_key in find_unknown_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
         print (f'{unknown_cogprints_key}')
 
-        cogprints_url = f'https://web-archive.southampton.ac.uk/cogprints.org/{unknown_cogprints_key[10:]}.bib.html'
 
-        with req.urlopen(cogprints_url) as response:
-            cogprints_bibtex_file_content = response.read().decode('utf-8')
-            with open(cogprints_bibtex_file, 'a', encoding="utf8") as file:
-                for match in re.finditer(compile_bibtex_items(), cogprints_bibtex_file_content):
-                    for cogprints_bibtex_item in match.groups():
-                        key = re.match(compile_bibtex_item_key(), cogprints_bibtex_item).group(1)
-                        if key not in fetched_cogprints_keys | known_keys:
-                            file.write(cogprints_bibtex_item)
-                            file.write('\n\n')
-                            fetched_cogprints_keys.add(key)
-                        else:
-                            print(f'(not adding {key} to Cogprints BibTeX file, it is already there.)')
+def open_bibliography_file():
+    open_cogprints_key()
+
+
+
+open_bibliography_file()
+
 
 
 def open_dblp_file():
