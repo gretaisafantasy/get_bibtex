@@ -150,7 +150,6 @@ def read_latex():
 
     find_all_keys()
 
-
 read_latex()
 
 
