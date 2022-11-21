@@ -184,6 +184,10 @@ def find_unknown_keys(bibtex_file, unknown_name_keys, name):
     return unknown_name_keys
 
 
+def open_bibliography_file():
+
+
+
 def open_cogprints_file():
     """This function opens the Cogprints BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_cogprints_keys = set([])
