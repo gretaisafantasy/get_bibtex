@@ -31,6 +31,7 @@ import os
 import os.path
 import re
 import argparse
+import configparser
 
 TEX_FILES_DIRECTORY = './'  # (sub)directory containing the .tex files
 ignore_tex_files = set()  # files within the directory that should be ignored
@@ -52,16 +53,30 @@ unknown_microsoft_keys = microsoft_keys - known_keys
 unknown_springer_keys = springer_keys - known_keys
 
 parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
-parser.add_argument('--c', default='cogprints.bib', type=str, help='Cogprints BibTeX input and output file; always ends in .bib and only accepts strings.')
-parser.add_argument('--d', default='dblp.bib', type=str, help='DBLP BibTeX input and output file; always ends in .bib and only accepts strings.')
-parser.add_argument('--m', default='microsoft.bib', type=str, help='Microsoft BibTeX input and output file; always ends in .bib and only accepts strings.')
-parser.add_argument('--s', default='springer.bib', type=str, help='Springer BibTeX input and output file; always ends in .bib and only accepts strings.')
+parser.add_argument('--config', type=str, help='Configuration file; file header always starts with "[Defaults]"; argument only accepts strings.')
+parser.add_argument('--c', default='cogprints.bib', type=str, help='Cogprints BibTeX input and output file; argument always ends in .bib and only accepts strings.')
+parser.add_argument('--d', default='dblp.bib', type=str, help='DBLP BibTeX input and output file; argument always ends in .bib and only accepts strings.')
+parser.add_argument('--m', default='microsoft.bib', type=str, help='Microsoft BibTeX input and output file; argument always ends in .bib and only accepts strings.')
+parser.add_argument('--s', default='springer.bib', type=str, help='Springer BibTeX input and output file; argument always ends in .bib and only accepts strings.')
 args = parser.parse_args()
 
 cogprints_bibtex_file = args.c
 dblp_bibtex_file = args.d
 microsoft_bibtex_file = args.m
 springer_bibtex_file = args.s
+
+if args.config:
+    config = configparser.ConfigParser()
+    config.read(args.config)
+    defaults = {}
+    defaults.update(dict(config.items("Defaults")))
+    parser.set_defaults(**defaults)
+    args = parser.parse_args()
+
+    cogprints_bibtex_file = args.c
+    dblp_bibtex_file = args.d
+    microsoft_bibtex_file = args.m
+    springer_bibtex_file = args.s
 
 
 def return_bibtex():
@@ -90,6 +105,7 @@ def read_all_existing_files():
     read_existing_file(dblp_bibtex_file)
     read_existing_file(microsoft_bibtex_file)
     read_existing_file(springer_bibtex_file)
+
     print('\nThe following keys have been found in your BibTeX files:')
     for key in known_keys:
         print (f'{key}')
