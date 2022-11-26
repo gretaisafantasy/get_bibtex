@@ -1,6 +1,6 @@
 [MAIN]
 
-disable=missing-function-docstring,
+disable=missing-module-docstring,
         line-too-long,
 
 # Analyse import fallback blocks. This can be used to support both Python 2 and
