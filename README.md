@@ -5,3 +5,7 @@
 [![Python 3.10](https://img.shields.io/badge/Python-3.10-blue?&logo=Python&logoColor=white)](https://www.python.org/)
 
 [WIP] This script collects various online bibliographies (Cogprints, DBLP, Microsoft, and Springer) citation keys from all .tex files and downloads the missing BibTeX records to a separate BibTeX file for each of the bibliographies.
+
+## Installation
+
+## Usage
