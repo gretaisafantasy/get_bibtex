@@ -5,7 +5,8 @@
 # directory and downloads missing BibTeX records from DBLP to a given BibTeX
 # file. Tested with Python 3.10.
 #
-# Copyright (c) 2014 Sebastian Abshoff <sebastian@abshoff.it> (c) 2022 Greta Tanudjaja
+# Copyright (c) 2014 Sebastian Abshoff <sebastian@abshoff.it>
+#           (c) 2022 Greta Tanudjaja
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -46,11 +47,6 @@ dblp_keys = set([])
 microsoft_keys = set([])
 
 springer_keys = set([])
-
-unknown_cogprints_keys = cogprints_keys - known_keys
-unknown_dblp_keys = dblp_keys - known_keys
-unknown_microsoft_keys = microsoft_keys - known_keys
-unknown_springer_keys = springer_keys - known_keys
 
 parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
 parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
@@ -188,22 +184,22 @@ def find_missing_keys(name):
     compile_bibtex_item_key()
 
 
-def find_unknown_keys(bibtex_file, unknown_name_keys, name):
-    """This function finds the unknown bibliography keys"""
-    if not os.path.isfile(bibtex_file) and unknown_name_keys == set():
+def check_missing_keys(bibtex_file, name_keys, name):
+    """This function checks for missing keys in the BibTeX file"""
+    if not os.path.isfile(bibtex_file) and name_keys == set():
         print (f'\nYou do not have a {name} BibTeX file, nothing needs to be fetched. :-)')
-    elif unknown_name_keys == set():
+    elif name_keys == set():
         print(f'\nYour {name} BibTeX file is up to date, nothing needs to be fetched. :-)')
     else:
         find_missing_keys(name)
-    return unknown_name_keys
+    return name_keys
 
 
 def open_cogprints_file():
     """This function opens the Cogprints BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_cogprints_keys = set([])
 
-    for unknown_cogprints_key in find_unknown_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
+    for unknown_cogprints_key in check_missing_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
         print (f'{unknown_cogprints_key}')
 
         cogprints_url = f'https://web-archive.southampton.ac.uk/cogprints.org/{unknown_cogprints_key[10:]}.bib.html'
@@ -226,7 +222,7 @@ def open_dblp_file():
     """This function opens the DBLP BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_dblp_keys = set([])
 
-    for unknown_dblp_key in find_unknown_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
+    for unknown_dblp_key in check_missing_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
         print (f'{unknown_dblp_key}')
 
         dblp_url = f'https://dblp.org/rec/{unknown_dblp_key[5:]}.bib'
@@ -249,7 +245,7 @@ def open_microsoft_file():
     """This function opens the Microsoft Research BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_microsoft_keys = set([])
 
-    for unknown_microsoft_key in find_unknown_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft'):
+    for unknown_microsoft_key in check_missing_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft'):
         print (f'{unknown_microsoft_key}')
 
         microsoft_url = f'https://www.microsoft.com/en-us/research/publication/{unknown_microsoft_key[10:]}/bibtex/'
@@ -272,7 +268,7 @@ def open_springer_file():
     """This function opens the Springer BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_springer_keys = set([])
 
-    for unknown_springer_key in find_unknown_keys(springer_bibtex_file, springer_keys, 'Springer'):
+    for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'Springer'):
         print (f'{unknown_springer_key}')
 
         springer_url = f'https://citation-needed.springer.com/v2/references/10.1007/{unknown_springer_key[9:]}'
@@ -299,6 +295,5 @@ def open_file():
     open_springer_file()
 
 open_file()
-
 
 print('\nAll done. :-)')
