@@ -296,5 +296,4 @@ def open_file():
 
 open_file()
 
-
 print('\nAll done. :-)')
