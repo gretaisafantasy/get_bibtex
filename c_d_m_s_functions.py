@@ -81,18 +81,18 @@ def return_bibtex():
     return re_bibtex_citations
 
 
-def read_existing_file(bibtex_file):
+def read_existing_file(name_bibtex_file):
     """This function reads the existing BibTeX file or create a new one if it is not found"""
-    if os.path.isfile(bibtex_file):
-        print(f'\nReading existing BibTeX file {bibtex_file}')
-        with (open(bibtex_file, encoding="utf-8")) as file:
+    if os.path.isfile(name_bibtex_file):
+        print(f'\nReading existing BibTeX file {name_bibtex_file}')
+        with (open(name_bibtex_file, encoding="utf-8")) as file:
             for _, line in enumerate(file):
                 for match in re.finditer(return_bibtex(), line):
                     for key in match.groups():
                         known_keys.add(key)
 
     else:
-        print(f'\nBibTeX file {bibtex_file} not found, will try to create it.')
+        print(f'\nBibTeX file {name_bibtex_file} not found, will try to create it.')
 
 
 def read_all_existing_files():
@@ -115,10 +115,10 @@ def return_tex_citation():
     return re_tex_citation
 
 
-def find_keys(name, bibliography_keys):
+def find_keys(name, name_keys):
     """This function finds the bibliography keys in the LaTeX files"""
     print(f"\nThe following {name} keys have been found in your LaTeX files:")
-    for key in bibliography_keys:
+    for key in name_keys:
         print (f'{key}')
 
 
@@ -184,9 +184,9 @@ def find_missing_keys(name):
     compile_bibtex_item_key()
 
 
-def check_missing_keys(bibtex_file, name_keys, name):
+def check_missing_keys(name_bibtex_file, name_keys, name):
     """This function checks for missing keys in the BibTeX file"""
-    if not os.path.isfile(bibtex_file) and name_keys == set():
+    if not os.path.isfile(name_bibtex_file) and name_keys == set():
         print (f'\nYou do not have a {name} BibTeX file, nothing needs to be fetched. :-)')
     elif name_keys == set():
         print(f'\nYour {name} BibTeX file is up to date, nothing needs to be fetched. :-)')
