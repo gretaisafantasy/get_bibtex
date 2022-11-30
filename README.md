@@ -12,6 +12,6 @@
 
 ## Installation
 
-Make sure you have Python 3.10 (https://www.python.org/downloads/) installed on your system.
+Make sure you have [Python 3.10] (https://www.python.org/downloads/) installed on your system.
 
 ## Usage
