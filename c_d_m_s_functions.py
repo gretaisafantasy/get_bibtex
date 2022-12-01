@@ -52,8 +52,8 @@ parser = argparse.ArgumentParser(description='Create BibTeX input and output fil
 parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
 parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
 parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
-parser.add_argument('--m',     default='microsoft.bib', help='Microsoft BibTeX input and output file; argument always ends in .bib.')
-parser.add_argument('--s',     default='springer.bib',  help='Springer BibTeX input and output file; argument always ends in .bib.')
+parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
+parser.add_argument('--s',     default='springer.bib',  help='SpringerLink BibTeX input and output file; argument always ends in .bib.')
 args = parser.parse_args()
 
 cogprints_bibtex_file = args.c
@@ -265,7 +265,7 @@ def open_microsoft_file():
 
 
 def open_springer_file():
-    """This function opens the Springer BibTeX file and writes it to our BibTeX file if it is not already there"""
+    """This function opens the SpringerLink BibTeX file and writes it to our BibTeX file if it is not already there"""
     fetched_springer_keys = set([])
 
     for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'Springer'):
