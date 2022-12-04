@@ -42,10 +42,13 @@ cogprints_keys = set([])
 fetched_cogprints_keys = set([])
 
 dblp_keys = set([])
+fetched_dblp_keys = set([])
 
 microsoft_keys = set([])
+fetched_microsoft_keys = set([])
 
 springer_keys = set([])
+fetched_springer_keys = set([])
 
 unknown_cogprints_keys = cogprints_keys - known_keys
 unknown_dblp_keys = dblp_keys - known_keys
@@ -184,22 +187,22 @@ def find_unknown_keys(bibtex_file, unknown_name_keys, name):
     return unknown_name_keys
 
 
-def simplify(name_bibtex_file_content):
-    """This function ..."""
-    with open(cogprints_bibtex_file, 'a', encoding="utf8") as file:
+def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_keys, name):
+    """This function opens the BibTeX file for the bibliography and writes it to our BibTeX file if it is not already there"""
+    with open(name_bibtex_file, 'a', encoding="utf8") as file:
         for match in re.finditer(compile_bibtex_items(), name_bibtex_file_content):
-            for cogprints_bibtex_item in match.groups():
-                    key = re.match(compile_bibtex_item_key(), cogprints_bibtex_item).group(1)
-                    if key not in fetched_cogprints_keys | known_keys:
-                        file.write(cogprints_bibtex_item)
+            for bibtex_item in match.groups():
+                    key = re.match(compile_bibtex_item_key(), bibtex_item).group(1)
+                    if key not in fetched_name_keys | known_keys:
+                        file.write(bibtex_item)
                         file.write('\n\n')
-                        fetched_cogprints_keys.add(key)
+                        fetched_name_keys.add(key)
                     else:
-                        print(f'(not adding {key} to Cogprints BibTeX file, it is already there.)')
+                        print(f'(not adding {key} to {name} BibTeX file, it is already there.)')
 
 
-def open_cogprints_key():
-    """This function ..."""
+def open_cogprints_url():
+    """This function opens Cogprints BibTeX file from its website"""
     for unknown_cogprints_key in find_unknown_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
         print (f'{unknown_cogprints_key}')
     
@@ -207,14 +210,11 @@ def open_cogprints_key():
 
         with req.urlopen(cogprints_url) as response:
             cogprints_bibtex_file_content = response.read().decode('utf-8')
-                            
-open_cogprints_key()
+            open_bibtex_file(cogprints_bibtex_file, cogprints_bibtex_file_content, fetched_cogprints_keys, 'Cogprints')
 
 
-def open_dblp_file():
-    """This function opens the DBLP BibTeX file and writes it to our BibTeX file if it is not already there"""
-    fetched_dblp_keys = set([])
-
+def open_dblp_url():
+    """This function opens DBLP BibTeX file from its website"""
     for unknown_dblp_key in find_unknown_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
         print (f'{unknown_dblp_key}')
 
@@ -222,22 +222,11 @@ def open_dblp_file():
 
         with req.urlopen(dblp_url) as response:
             dblp_bibtex_file_content = response.read().decode('utf-8')
-            with open(dblp_bibtex_file, 'a', encoding="utf8") as file:
-                for match in re.finditer(compile_bibtex_items(), dblp_bibtex_file_content):
-                    for dblp_bibtex_item in match.groups():
-                        key = re.match(compile_bibtex_item_key(), dblp_bibtex_item).group(1)
-                        if key not in fetched_dblp_keys | known_keys:
-                            file.write(dblp_bibtex_item)
-                            file.write('\n\n')
-                            fetched_dblp_keys.add(key)
-                        else:
-                            print(f'(not adding {key} to DBLP BibTeX file, it is already there.)')
+            open_bibtex_file(dblp_bibtex_file, dblp_bibtex_file_content, fetched_dblp_keys, 'DBLP')
 
 
-def open_microsoft_file():
-    """This function opens the Microsoft Research BibTeX file and writes it to our BibTeX file if it is not already there"""
-    fetched_microsoft_keys = set([])
-
+def open_microsoft_url():
+    """This function opens Microsoft Research BibTeX file from its website"""
     for unknown_microsoft_key in find_unknown_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft'):
         print (f'{unknown_microsoft_key}')
 
@@ -245,22 +234,11 @@ def open_microsoft_file():
 
         with req.urlopen(microsoft_url) as response:
             microsoft_bibtex_file_content = response.read().decode('utf-8')
-            with open(microsoft_bibtex_file, 'a', encoding="utf8") as file:
-                for match in re.finditer(compile_bibtex_items(), microsoft_bibtex_file_content):
-                    for microsoft_bibtex_item in match.groups():
-                        key = re.match(compile_bibtex_item_key(), microsoft_bibtex_item).group(1)
-                        if key not in fetched_microsoft_keys | known_keys:
-                            file.write(microsoft_bibtex_item)
-                            file.write('\n\n')
-                            fetched_microsoft_keys.add(key)
-                        else:
-                            print(f'(not adding {key} to Microsoft BibTeX file, it is already there.)')
+            open_bibtex_file(microsoft_bibtex_file, microsoft_bibtex_file_content, fetched_microsoft_keys, 'Microsoft')
 
 
-def open_springer_file():
-    """This function opens the Springer BibTeX file and writes it to our BibTeX file if it is not already there"""
-    fetched_springer_keys = set([])
-
+def open_springer_url():
+    """This function opens Springer BibTeX file from its website"""
     for unknown_springer_key in find_unknown_keys(springer_bibtex_file, springer_keys, 'Springer'):
         print (f'{unknown_springer_key}')
 
@@ -268,25 +246,17 @@ def open_springer_file():
 
         with req.urlopen(springer_url) as response:
             springer_bibtex_file_content = response.read().decode('utf-8')
-            with open(springer_bibtex_file, 'a', encoding="utf8") as file:
-                for match in re.finditer(compile_bibtex_items(), springer_bibtex_file_content):
-                    for springer_bibtex_item in match.groups():
-                        key = re.match(compile_bibtex_item_key(), springer_bibtex_item).group(1)
-                        if key not in fetched_springer_keys | known_keys:
-                            file.write(springer_bibtex_item)
-                            file.write('\n\n')
-                            fetched_springer_keys.add(key)
-                        else:
-                            print(f'(not adding {key} to Springer BibTeX file, it is already there.)')
+            open_bibtex_file(springer_bibtex_file, springer_bibtex_file_content, fetched_springer_keys, 'Springer')
 
 
-def open_file():
-    """This function calls on the previous functions of opening the BibTeX file and writing it to our BibTeX file"""
-    open_dblp_file()
-    open_microsoft_file()
-    open_springer_file()
+def open_url():
+    """This function calls on the previous functions of opening the BibTeX files from their website"""
+    open_cogprints_url()
+    open_dblp_url()
+    open_microsoft_url()
+    open_springer_url()
 
-open_file()
+open_url()
 
 
 print('\nAll done. :-)')
