@@ -204,20 +204,20 @@ def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_ke
     with open(name_bibtex_file, 'a', encoding="utf8") as file:
         for match in re.finditer(compile_bibtex_items(), name_bibtex_file_content):
             for bibtex_item in match.groups():
-                    key = re.match(compile_bibtex_item_key(), bibtex_item).group(1)
-                    if key not in fetched_name_keys | known_keys:
-                        file.write(bibtex_item)
-                        file.write('\n\n')
-                        fetched_name_keys.add(key)
-                    else:
-                        print(f'(not adding {key} to {name} BibTeX file, it is already there.)')
+                key = re.match(compile_bibtex_item_key(), bibtex_item).group(1)
+                if key not in fetched_name_keys | known_keys:
+                    file.write(bibtex_item)
+                    file.write('\n\n')
+                    fetched_name_keys.add(key)
+                else:
+                    print(f'(not adding {key} to {name} BibTeX file, it is already there.)')
 
 
 def open_cogprints_url():
     """This function opens Cogprints BibTeX file from its website"""
-    for unknown_cogprints_key in find_unknown_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
+    for unknown_cogprints_key in check_missing_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
         print (f'{unknown_cogprints_key}')
-    
+
         cogprints_url = f'https://web-archive.southampton.ac.uk/cogprints.org/{unknown_cogprints_key[10:]}.bib.html'
 
         with req.urlopen(cogprints_url) as response:
@@ -239,7 +239,7 @@ def open_dblp_url():
 
 def open_microsoft_url():
     """This function opens Microsoft Research BibTeX file from its website"""
-    for unknown_microsoft_key in find_unknown_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft'):
+    for unknown_microsoft_key in check_missing_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft'):
         print (f'{unknown_microsoft_key}')
 
         microsoft_url = f'https://www.microsoft.com/en-us/research/publication/{unknown_microsoft_key[10:]}/bibtex/'
