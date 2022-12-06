@@ -5,7 +5,8 @@
 # directory and downloads missing BibTeX records from DBLP to a given BibTeX
 # file. Tested with Python 3.10.
 #
-# Copyright (c) 2014 Sebastian Abshoff <sebastian@abshoff.it> (c) 2022 Greta Tanudjaja
+# Copyright (c) 2014 Sebastian Abshoff <sebastian@abshoff.it>
+#           (c) 2022 Greta Tanudjaja
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
