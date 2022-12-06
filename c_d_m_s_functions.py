@@ -32,6 +32,7 @@ import os
 import os.path
 import re
 import argparse
+import configparser
 
 TEX_FILES_DIRECTORY = './'  # (sub)directory containing the .tex files
 ignore_tex_files = set()  # files within the directory that should be ignored
@@ -51,22 +52,31 @@ fetched_microsoft_keys = set([])
 springer_keys = set([])
 fetched_springer_keys = set([])
 
-unknown_cogprints_keys = cogprints_keys - known_keys
-unknown_dblp_keys = dblp_keys - known_keys
-unknown_microsoft_keys = microsoft_keys - known_keys
-unknown_springer_keys = springer_keys - known_keys
-
 parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
-parser.add_argument('--c', default='cogprints.bib', type=str, help='Cogprints BibTeX input and output file; always ends in .bib and only accepts strings.')
-parser.add_argument('--d', default='dblp.bib', type=str, help='DBLP BibTeX input and output file; always ends in .bib and only accepts strings.')
-parser.add_argument('--m', default='microsoft.bib', type=str, help='Microsoft BibTeX input and output file; always ends in .bib and only accepts strings.')
-parser.add_argument('--s', default='springer.bib', type=str, help='Springer BibTeX input and output file; always ends in .bib and only accepts strings.')
+parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
+parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
+parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
+parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
+parser.add_argument('--s',     default='springer.bib',  help='SpringerLink BibTeX input and output file; argument always ends in .bib.')
 args = parser.parse_args()
 
 cogprints_bibtex_file = args.c
 dblp_bibtex_file = args.d
 microsoft_bibtex_file = args.m
 springer_bibtex_file = args.s
+
+if args.config:
+    config = configparser.ConfigParser()
+    config.read(args.config)
+    defaults = {}
+    defaults.update(dict(config.items("Defaults")))
+    parser.set_defaults(**defaults)
+    args = parser.parse_args()
+
+    cogprints_bibtex_file = args.c
+    dblp_bibtex_file = args.d
+    microsoft_bibtex_file = args.m
+    springer_bibtex_file = args.s
 
 
 def return_bibtex():
@@ -75,18 +85,18 @@ def return_bibtex():
     return re_bibtex_citations
 
 
-def read_existing_file(bibtex_file):
+def read_existing_file(name_bibtex_file):
     """This function reads the existing BibTeX file or create a new one if it is not found"""
-    if os.path.isfile(bibtex_file):
-        print(f'\nReading existing BibTeX file {bibtex_file}')
-        with (open(bibtex_file, encoding="utf-8")) as file:
+    if os.path.isfile(name_bibtex_file):
+        print(f'\nReading existing BibTeX file {name_bibtex_file}')
+        with (open(name_bibtex_file, encoding="utf-8")) as file:
             for _, line in enumerate(file):
                 for match in re.finditer(return_bibtex(), line):
                     for key in match.groups():
                         known_keys.add(key)
 
     else:
-        print(f'\nBibTeX file {bibtex_file} not found, will try to create it.')
+        print(f'\nBibTeX file {name_bibtex_file} not found, will try to create it.')
 
 
 def read_all_existing_files():
@@ -95,6 +105,7 @@ def read_all_existing_files():
     read_existing_file(dblp_bibtex_file)
     read_existing_file(microsoft_bibtex_file)
     read_existing_file(springer_bibtex_file)
+
     print('\nThe following keys have been found in your BibTeX files:')
     for key in known_keys:
         print (f'{key}')
@@ -108,10 +119,10 @@ def return_tex_citation():
     return re_tex_citation
 
 
-def find_keys(name, bibliography_keys):
+def find_keys(name, name_keys):
     """This function finds the bibliography keys in the LaTeX files"""
     print(f"\nThe following {name} keys have been found in your LaTeX files:")
-    for key in bibliography_keys:
+    for key in name_keys:
         print (f'{key}')
 
 
@@ -177,15 +188,15 @@ def find_missing_keys(name):
     compile_bibtex_item_key()
 
 
-def find_unknown_keys(bibtex_file, unknown_name_keys, name):
-    """This function finds the unknown bibliography keys"""
-    if not os.path.isfile(bibtex_file) and unknown_name_keys == set():
+def check_missing_keys(name_bibtex_file, name_keys, name):
+    """This function checks for missing keys in the BibTeX file"""
+    if not os.path.isfile(name_bibtex_file) and name_keys == set():
         print (f'\nYou do not have a {name} BibTeX file, nothing needs to be fetched. :-)')
-    elif unknown_name_keys == set():
+    elif name_keys == set():
         print(f'\nYour {name} BibTeX file is up to date, nothing needs to be fetched. :-)')
     else:
         find_missing_keys(name)
-    return unknown_name_keys
+    return name_keys
 
 
 def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_keys, name):
@@ -216,7 +227,7 @@ def open_cogprints_url():
 
 def open_dblp_url():
     """This function opens DBLP BibTeX file from its website"""
-    for unknown_dblp_key in find_unknown_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
+    for unknown_dblp_key in check_missing_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
         print (f'{unknown_dblp_key}')
 
         dblp_url = f'https://dblp.org/rec/{unknown_dblp_key[5:]}.bib'
@@ -240,7 +251,7 @@ def open_microsoft_url():
 
 def open_springer_url():
     """This function opens Springer BibTeX file from its website"""
-    for unknown_springer_key in find_unknown_keys(springer_bibtex_file, springer_keys, 'Springer'):
+    for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'Springer'):
         print (f'{unknown_springer_key}')
 
         springer_url = f'https://citation-needed.springer.com/v2/references/10.1007/{unknown_springer_key[9:]}'
@@ -258,6 +269,5 @@ def open_url():
     open_springer_url()
 
 open_url()
-
 
 print('\nAll done. :-)')
