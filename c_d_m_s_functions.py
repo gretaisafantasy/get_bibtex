@@ -130,8 +130,8 @@ def find_all_keys():
     """This function calls on the previous functions of finding the keys of all the bibliographies"""
     find_keys('Cogprints', cogprints_keys)
     find_keys('DBLP', dblp_keys)
-    find_keys('Microsoft', microsoft_keys)
-    find_keys('Springer', springer_keys)
+    find_keys('Microsoft Research', microsoft_keys)
+    find_keys('SpringerLink', springer_keys)
     find_keys('unused', unused_keys)
 
 
@@ -239,26 +239,26 @@ def open_dblp_url():
 
 def open_microsoft_url():
     """This function opens Microsoft Research BibTeX file from its website"""
-    for unknown_microsoft_key in check_missing_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft'):
+    for unknown_microsoft_key in check_missing_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft Research'):
         print (f'{unknown_microsoft_key}')
 
         microsoft_url = f'https://www.microsoft.com/en-us/research/publication/{unknown_microsoft_key[10:]}/bibtex/'
 
         with req.urlopen(microsoft_url) as response:
             microsoft_bibtex_file_content = response.read().decode('utf-8')
-            open_bibtex_file(microsoft_bibtex_file, microsoft_bibtex_file_content, fetched_microsoft_keys, 'Microsoft')
+            open_bibtex_file(microsoft_bibtex_file, microsoft_bibtex_file_content, fetched_microsoft_keys, 'Microsoft Research')
 
 
 def open_springer_url():
-    """This function opens Springer BibTeX file from its website"""
-    for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'Springer'):
+    """This function opens SpringerLink BibTeX file from its website"""
+    for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'SpringerLink'):
         print (f'{unknown_springer_key}')
 
         springer_url = f'https://citation-needed.springer.com/v2/references/10.1007/{unknown_springer_key[9:]}'
 
         with req.urlopen(springer_url) as response:
             springer_bibtex_file_content = response.read().decode('utf-8')
-            open_bibtex_file(springer_bibtex_file, springer_bibtex_file_content, fetched_springer_keys, 'Springer')
+            open_bibtex_file(springer_bibtex_file, springer_bibtex_file_content, fetched_springer_keys, 'SpringerLink')
 
 
 def open_url():
