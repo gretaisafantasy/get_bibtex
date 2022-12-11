@@ -3,7 +3,7 @@
 # CC0, dedicated to public domain by Akihiro Uchida
 from html.parser import HTMLParser
 import argparse
-import urllib.request as request
+import urllib.request as req
 import os
 import re
 import calendar
@@ -168,8 +168,8 @@ if __name__ == '__main__':
         proxy = {'http': os.environ['http_proxy']}
     except KeyError as e:
         proxy = {}
-    handler = request.ProxyHandler(proxy)
-    opener = request.build_opener(handler)
+    handler = req.ProxyHandler(proxy)
+    opener = req.build_opener(handler)
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument('url', type=str)
     arg_parser.add_argument('-f', '--file', type=str,

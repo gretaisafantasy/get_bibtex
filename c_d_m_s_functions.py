@@ -27,14 +27,17 @@
 # THE SOFTWARE.
 
 from pathlib import Path
+from html.parser import HTMLParser
 import urllib.request as req
 import os
 import os.path
 import re
 import argparse
 import configparser
+import calendar
 
 TEX_FILES_DIRECTORY = './'  # (sub)directory containing the .tex files
+ARXIV_ID_RE = re.compile(r'arXiv:((\d\d)(\d\d)\.\d+)')
 ignore_tex_files = set()  # files within the directory that should be ignored
 
 known_keys = set([])
@@ -80,13 +83,13 @@ if args.config:
 
 
 def return_bibtex():
-    """This function compiles and returns the BibTeX file citations"""
+    """Compiles and returns the BibTeX file citations"""
     re_bibtex_citations = re.compile(r'@.*\{([^,]*),')
     return re_bibtex_citations
 
 
 def read_existing_file(name_bibtex_file):
-    """This function reads the existing BibTeX file or create a new one if it is not found"""
+    """Reads the existing BibTeX file or create a new one if it is not found"""
     if os.path.isfile(name_bibtex_file):
         print(f'\nReading existing BibTeX file {name_bibtex_file}')
         with (open(name_bibtex_file, encoding="utf-8")) as file:
@@ -100,7 +103,7 @@ def read_existing_file(name_bibtex_file):
 
 
 def read_all_existing_files():
-    """This function compiles and reads all of the existing bibliography BibTex files"""
+    """Compiles and reads all of the existing bibliography BibTex files"""
     read_existing_file(cogprints_bibtex_file)
     read_existing_file(dblp_bibtex_file)
     read_existing_file(microsoft_bibtex_file)
@@ -114,20 +117,20 @@ read_all_existing_files()
 
 
 def return_tex_citation():
-    """This function compiles and returns the LateX citations"""
+    """Compiles and returns the LateX citations"""
     re_tex_citation = re.compile(r'(?:cite|citep|citet|fullciteown|autocite|textcite)\{([^}]+)}')
     return re_tex_citation
 
 
 def find_keys(name, name_keys):
-    """This function finds the bibliography keys in the LaTeX files"""
+    """Finds the bibliography keys in the LaTeX files"""
     print(f"\nThe following {name} keys have been found in your LaTeX files:")
     for key in name_keys:
         print (f'{key}')
 
 
 def find_all_keys():
-    """This function calls on the previous functions of finding the keys of all the bibliographies"""
+    """Calls on the previous functions of finding the keys of all the bibliographies"""
     find_keys('Cogprints', cogprints_keys)
     find_keys('DBLP', dblp_keys)
     find_keys('Microsoft Research', microsoft_keys)
@@ -136,7 +139,7 @@ def find_all_keys():
 
 
 def read_latex():
-    """This function reads the LateX documents and adds the corresponding keys"""
+    """Reads the LateX documents and adds the corresponding keys"""
     print('\nReading your LaTeX documents:')
 
     return_tex_citation()
@@ -170,26 +173,26 @@ read_latex()
 
 
 def compile_bibtex_items():
-    """This function compiles the BibTeX items"""
+    """Compiles the BibTeX items"""
     re_bibtex_items = re.compile(r'(@[a-zA-Z]+\{[^@]*\n})', re.DOTALL)
     return re_bibtex_items
 
 
 def compile_bibtex_item_key():
-    """This function compiles the BibTeX item key"""
+    """Compiles the BibTeX item key"""
     re_bibtex_item_key = re.compile(r'@[a-zA-Z]+\{([^,]+),\s*', re.DOTALL)
     return re_bibtex_item_key
 
 
 def find_missing_keys(name):
-    """This function finds the missing keys from the bibliography"""
+    """Finds the missing keys from the bibliography"""
     print(f'\nFetching BibTeX records for missing keys from {name}:')
     compile_bibtex_items()
     compile_bibtex_item_key()
 
 
 def check_missing_keys(name_bibtex_file, name_keys, name):
-    """This function checks for missing keys in the BibTeX file"""
+    """Checks for missing keys in the BibTeX file"""
     if not os.path.isfile(name_bibtex_file) and name_keys == set():
         print (f'\nYou do not have a {name} BibTeX file, nothing needs to be fetched. :-)')
     elif name_keys == set():
@@ -200,7 +203,7 @@ def check_missing_keys(name_bibtex_file, name_keys, name):
 
 
 def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_keys, name):
-    """This function opens the BibTeX file for the bibliography and writes it to our BibTeX file if it is not already there"""
+    """Opens the BibTeX file for the bibliography and writes it to our BibTeX file if it is not already there"""
     with open(name_bibtex_file, 'a', encoding="utf8") as file:
         for match in re.finditer(compile_bibtex_items(), name_bibtex_file_content):
             for bibtex_item in match.groups():
@@ -214,7 +217,7 @@ def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_ke
 
 
 def open_cogprints_url():
-    """This function opens Cogprints BibTeX file from its website"""
+    """Opens Cogprints BibTeX file from its website"""
     for unknown_cogprints_key in check_missing_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
         print (f'{unknown_cogprints_key}')
 
@@ -226,7 +229,7 @@ def open_cogprints_url():
 
 
 def open_dblp_url():
-    """This function opens DBLP BibTeX file from its website"""
+    """Opens DBLP BibTeX file from its website"""
     for unknown_dblp_key in check_missing_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
         print (f'{unknown_dblp_key}')
 
@@ -238,7 +241,7 @@ def open_dblp_url():
 
 
 def open_microsoft_url():
-    """This function opens Microsoft Research BibTeX file from its website"""
+    """Opens Microsoft Research BibTeX file from its website"""
     for unknown_microsoft_key in check_missing_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft Research'):
         print (f'{unknown_microsoft_key}')
 
@@ -250,7 +253,7 @@ def open_microsoft_url():
 
 
 def open_springer_url():
-    """This function opens SpringerLink BibTeX file from its website"""
+    """Opens SpringerLink BibTeX file from its website"""
     for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'SpringerLink'):
         print (f'{unknown_springer_key}')
 
@@ -262,12 +265,189 @@ def open_springer_url():
 
 
 def open_url():
-    """This function calls on the previous functions of opening the BibTeX files from their website"""
+    """Calls on the previous functions of opening the BibTeX files from their website"""
     open_cogprints_url()
     open_dblp_url()
     open_microsoft_url()
     open_springer_url()
 
 open_url()
+
+class bibitem(object):
+    def __init__(self, bibtype):
+        assert isinstance(bibtype, str)
+        self.bibtype = bibtype
+        self.field = dict()
+        return
+
+    def add(self, dic):
+        assert isinstance(dic, dict)
+        for k, v in dic.items():
+            self.field[k] = self.field.get(k, '') + v
+        return
+
+    def gen_key(self):
+        key = ''
+        if 'year' in self.field:
+            key += self.field['year']
+        if 'author' in self.field:
+            authors = self.field['author'].split('and')
+            for author in authors:
+                cnt = 0
+                for w in author.split():
+                    if cnt < len(w):
+                        (cnt, name) = (len(w), w.strip(',.'))
+                        key += name
+        if 'title' in self.field:
+            for w in self.field['title'].split():
+                key += w.title()
+                if len(w) > 4:
+                    break
+        return key
+
+    def dump(self):
+        d = '@{}{{{}'.format(self.bibtype, self.gen_key())
+        for k, v in self.field.items():
+            if v not in ['', None]:
+                d += ',\n{}={{{}}}'.format(k, v)
+        d += '}\n'
+        return d
+
+class AbstParser(object):
+    def __init__(self):
+        self.parse = self.parse_main
+        self.text = ''
+        return
+
+    def feed(self, text):
+        i = 0
+        while i < len(text):
+            (self.parse, i) = self.parse(text, i)
+        return
+
+    def parse_main(self, text, i):
+        c = text[i]
+        if c == '"':
+            self.text += '``'
+            return (self.parse_quote, i+1)
+        if c == '-':
+            return (self.parse_hyphen, i+1)
+        else:
+            if c == '\n':
+                self.text += ' '
+            else:
+                self.text += c
+            return (self.parse_main, i+1)
+
+    def parse_quote(self, text, i):
+        c = text[i]
+        if c == '"':
+            self.text += '\'\''
+            return (self.parse_main, i+1)
+        else:
+            if c == '\n':
+                self.text += ' '
+            else:
+                self.text += c
+            return (self.parse_quote, i+1)
+
+    def parse_hyphen(self, text, i):
+        c = text[i]
+        if c not in (' ', '\n'):
+            self.text += '-'
+        return (self.parse_main, i+1)
+
+def normalize(cls, dic):
+    assert cls in dic
+    value = dic[cls]
+    result = dict()
+    if cls == 'title mathjax':
+        result['title'] = value.strip('\n')
+    elif cls == 'authors':
+        result['author'] = ''
+        for c in value.strip('\n'):
+            if c == ',':
+                result['author'] += ' and '
+            else:
+                result['author'] += c
+    elif cls == 'abstract mathjax':
+        parser = AbstParser()
+        parser.feed(value.strip())
+        result['abstract'] = parser.text
+    if cls.startswith('tablecell '):
+        c = cls.partition('tablecell ')[-1]
+        if c == 'arxivid':
+            result['eprint'] = value
+            m = ARXIV_ID_RE.match(value)
+            result['url'] = 'http://arxiv.org/abs/{}'.format(m.group(1))
+            result['year'] = '20{}'.format(m.group(2))
+            result['month'] = calendar.month_abbr[int(m.group(3))]
+        elif c == 'doi':
+            result[c] = value
+            result['doi-url'] = 'http://dx.doi.org/{}'.format(value)
+        else:
+            result[c] = dic[cls]
+    return result
+
+some_classes = ('title mathjax', 'authors', 'abstract mathjax',
+                'tablecell comments', 'tablecell arxivid', 'tablecell subjects',
+                'tablecell jref', 'tablecell doi', 'tablecell report-number',
+                'tablecell msc-classes', 'tablecell acm-classes')
+
+class MyHTMLParser(HTMLParser):
+    def __init__(self):
+        HTMLParser.__init__(self)
+        self.item = bibitem('misc')
+        self.stack = []
+        self.in_descriptor = False
+        self.tmp = dict()
+        return
+
+    def handle_starttag(self, tag, attrs):
+        for attr in attrs:
+            if attr[1] in some_classes:
+                self.stack.append({'tag': tag, 'class': attr[1]})
+            if attr[1] == "descriptor":
+                self.in_descriptor = True
+        return
+
+    def handle_endtag(self, tag):
+        if self.in_descriptor and tag == "span":
+            self.in_descriptor = False
+        if self.stack != [] and tag == self.stack[-1]['tag']:
+            s = self.stack.pop()
+            self.item.add(normalize(s['class'], self.tmp))
+        return
+
+    def handle_data(self, data):
+        for c in some_classes:
+            if self.in_descriptor:
+                continue
+            if self.stack != [] and self.stack[-1]['class'] == c:
+                self.tmp[c] = self.tmp.get(c, '') + data
+        return
+
+if __name__ == '__main__':
+    try:
+        proxy = {'http': os.environ['http_proxy']}
+    except KeyError as e:
+        proxy = {}
+    handler = req.ProxyHandler(proxy)
+    opener = req.build_opener(handler)
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument('url', type=str)
+    arg_parser.add_argument('-f', '--file', type=str,
+                            required=True)
+    args = arg_parser.parse_args()
+    parser = MyHTMLParser()
+    response = opener.open(args.url)
+    parser.feed(response.read().decode('utf-8'))
+    response.close()
+    fpath = os.path.abspath(args.file)
+    fflag = 'a' if os.path.exists(fpath) else 'w'
+    with open(fpath, fflag, encoding="utf8") as f:
+        f.write(parser.item.dump())
+    parser.close()
+
 
 print('\nAll done. :-)')
