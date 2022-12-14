@@ -82,6 +82,9 @@ if args.config:
     springer_bibtex_file = args.s
 
 
+
+
+
 def return_bibtex():
     """Compiles and returns the BibTeX file citations"""
     re_bibtex_citations = re.compile(r'@.*\{([^,]*),')
@@ -269,7 +272,7 @@ def open_url():
 
 print('\nAll done. :-)')
 
-class bibitem(object):
+class bibitem():
     def __init__(self, bibtype):
         assert isinstance(bibtype, str)
         self.bibtype = bibtype
