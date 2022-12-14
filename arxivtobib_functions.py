@@ -113,8 +113,6 @@ def read_all_existing_files():
     for key in known_keys:
         print (f'{key}')
 
-read_all_existing_files()
-
 
 def return_tex_citation():
     """Compiles and returns the LateX citations"""
@@ -168,8 +166,6 @@ def read_latex():
                                     unused_keys.add(key.strip())
 
     find_all_keys()
-
-read_latex()
 
 
 def compile_bibtex_items():
@@ -271,7 +267,7 @@ def open_url():
     open_microsoft_url()
     open_springer_url()
 
-open_url()
+print('\nAll done. :-)')
 
 class bibitem(object):
     def __init__(self, bibtype):
@@ -428,6 +424,10 @@ class MyHTMLParser(HTMLParser):
         return
 
 if __name__ == '__main__':
+    read_all_existing_files()
+    read_latex()
+    open_url()
+
     try:
         proxy = {'http': os.environ['http_proxy']}
     except KeyError as e:
@@ -448,6 +448,3 @@ if __name__ == '__main__':
     with open(fpath, fflag, encoding="utf8") as f:
         f.write(parser.item.dump())
     parser.close()
-
-
-print('\nAll done. :-)')
