@@ -88,10 +88,10 @@ class BibItem():
         return key
 
     def dump(self):
-        d = '@{}{{{}'.format(self.bibtype, self.gen_key())
+        d = f'@{self.bibtype}{{{self.gen_key()}'
         for k, v in self.field.items():
             if v not in ['', None]:
-                d += ',\n{}={{{}}}'.format(k, v)
+                d += f',\n{k}={{{v}}}'
         d += '}\n'
         return d
 
@@ -161,12 +161,12 @@ def normalize(cls, dic):
         if c == 'arxivid':
             result['eprint'] = value
             m = ARXIV_ID_RE.match(value)
-            result['url'] = 'http://arxiv.org/abs/{}'.format(m.group(1))
-            result['year'] = '20{}'.format(m.group(2))
+            result['url'] = f'http://arxiv.org/abs/{(m.group(1))}'
+            result['year'] = f'20{(m.group(2))}'
             result['month'] = calendar.month_abbr[int(m.group(3))]
         elif c == 'doi':
             result[c] = value
-            result['doi-url'] = 'http://dx.doi.org/{}'.format(value)
+            result['doi-url'] = f'http://dx.doi.org/{value}'
         else:
             result[c] = dic[cls]
     return result
@@ -208,7 +208,7 @@ class MyHTMLParser(HTMLParser):
             if self.stack != [] and self.stack[-1]['class'] == c:
                 self.tmp[c] = self.tmp.get(c, '') + data
         return
-        
+
 
 def return_bibtex():
     """Compiles and returns the BibTeX file citations"""
@@ -396,13 +396,22 @@ def open_url():
     open_springer_url()
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
-    parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
-    parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
-    parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
-    parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
-    parser.add_argument('--s',     default='springer.bib',  help='SpringerLink BibTeX input and output file; argument always ends in .bib.')
-    args = parser.parse_args()
+    try:
+        proxy = {'http': os.environ['http_proxy']}
+    except KeyError as e:
+        proxy = {}
+    handler = req.ProxyHandler(proxy)
+    opener = req.build_opener(handler)
+
+    arg_parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
+    arg_parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
+    arg_parser.add_argument('url',                              help='')
+    arg_parser.add_argument('-f', '--file', required=True,      help='ArXiV BibTeX input and output file; argument always ends in .bib.')    
+    arg_parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
+    arg_parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
+    arg_parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
+    arg_parser.add_argument('--s',     default='springer.bib',  help='SpringerLink BibTeX input and output file; argument always ends in .bib.')
+    args = arg_parser.parse_args()
 
     cogprints_bibtex_file = args.c
     dblp_bibtex_file = args.d
@@ -414,8 +423,8 @@ if __name__ == '__main__':
         config.read(args.config)
         defaults = {}
         defaults.update(dict(config.items("Defaults")))
-        parser.set_defaults(**defaults)
-        args = parser.parse_args()
+        arg_parser.set_defaults(**defaults)
+        args = arg_parser.parse_args()
 
         cogprints_bibtex_file = args.c
         dblp_bibtex_file = args.d
@@ -426,17 +435,6 @@ if __name__ == '__main__':
     read_latex()
     open_url()
 
-    try:
-        proxy = {'http': os.environ['http_proxy']}
-    except KeyError as e:
-        proxy = {}
-    handler = req.ProxyHandler(proxy)
-    opener = req.build_opener(handler)
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('url', type=str)
-    arg_parser.add_argument('-f', '--file', type=str,
-                            required=True)
-    args = arg_parser.parse_args()
     parser = MyHTMLParser()
     response = opener.open(args.url)
     parser.feed(response.read().decode('utf-8'))
@@ -448,4 +446,3 @@ if __name__ == '__main__':
     parser.close()
 
     print('\nAll done. :-)')
-
