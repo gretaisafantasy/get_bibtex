@@ -55,34 +55,7 @@ fetched_microsoft_keys = set([])
 springer_keys = set([])
 fetched_springer_keys = set([])
 
-parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
-parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
-parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
-parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
-parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
-parser.add_argument('--s',     default='springer.bib',  help='SpringerLink BibTeX input and output file; argument always ends in .bib.')
-args = parser.parse_args()
-
-cogprints_bibtex_file = args.c
-dblp_bibtex_file = args.d
-microsoft_bibtex_file = args.m
-springer_bibtex_file = args.s
-
-if args.config:
-    config = configparser.ConfigParser()
-    config.read(args.config)
-    defaults = {}
-    defaults.update(dict(config.items("Defaults")))
-    parser.set_defaults(**defaults)
-    args = parser.parse_args()
-
-    cogprints_bibtex_file = args.c
-    dblp_bibtex_file = args.d
-    microsoft_bibtex_file = args.m
-    springer_bibtex_file = args.s
-
-
-class bibitem():
+class BibItem():
     def __init__(self, bibtype):
         assert isinstance(bibtype, str)
         self.bibtype = bibtype
@@ -206,7 +179,7 @@ some_classes = ('title mathjax', 'authors', 'abstract mathjax',
 class MyHTMLParser(HTMLParser):
     def __init__(self):
         HTMLParser.__init__(self)
-        self.item = bibitem('misc')
+        self.item = BibItem('misc')
         self.stack = []
         self.in_descriptor = False
         self.tmp = dict()
@@ -422,9 +395,33 @@ def open_url():
     open_microsoft_url()
     open_springer_url()
 
-print('\nAll done. :-)')
-
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
+    parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
+    parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
+    parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
+    parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
+    parser.add_argument('--s',     default='springer.bib',  help='SpringerLink BibTeX input and output file; argument always ends in .bib.')
+    args = parser.parse_args()
+
+    cogprints_bibtex_file = args.c
+    dblp_bibtex_file = args.d
+    microsoft_bibtex_file = args.m
+    springer_bibtex_file = args.s
+
+    if args.config:
+        config = configparser.ConfigParser()
+        config.read(args.config)
+        defaults = {}
+        defaults.update(dict(config.items("Defaults")))
+        parser.set_defaults(**defaults)
+        args = parser.parse_args()
+
+        cogprints_bibtex_file = args.c
+        dblp_bibtex_file = args.d
+        microsoft_bibtex_file = args.m
+        springer_bibtex_file = args.s
+
     read_all_existing_files()
     read_latex()
     open_url()
@@ -449,3 +446,6 @@ if __name__ == '__main__':
     with open(fpath, fflag, encoding="utf8") as f:
         f.write(parser.item.dump())
     parser.close()
+
+    print('\nAll done. :-)')
+
