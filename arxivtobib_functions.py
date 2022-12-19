@@ -196,7 +196,7 @@ class MyHTMLParser(HTMLParser):
     def handle_endtag(self, tag):
         if self.in_descriptor and tag == "span":
             self.in_descriptor = False
-        if self.stack != [] and tag == self.stack[-1]['tag']:
+        if self.stack and tag == self.stack[-1]['tag']:
             s = self.stack.pop()
             self.item.add(normalize(s['class'], self.tmp))
         return
@@ -205,7 +205,7 @@ class MyHTMLParser(HTMLParser):
         for c in some_classes:
             if self.in_descriptor:
                 continue
-            if self.stack != [] and self.stack[-1]['class'] == c:
+            if self.stack and self.stack[-1]['class'] == c:
                 self.tmp[c] = self.tmp.get(c, '') + data
         return
 
@@ -406,7 +406,7 @@ if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
     arg_parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
     arg_parser.add_argument('url',                              help='')
-    arg_parser.add_argument('-f', '--file', required=True,      help='ArXiV BibTeX input and output file; argument always ends in .bib.')    
+    arg_parser.add_argument('-f', '--file', required=True,      help='ArXiV BibTeX input and output file; argument always ends in .bib.')   
     arg_parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
@@ -440,8 +440,8 @@ if __name__ == '__main__':
     parser.feed(response.read().decode('utf-8'))
     response.close()
     fpath = os.path.abspath(args.file)
-    fflag = 'a' if os.path.exists(fpath) else 'w'
-    with open(fpath, fflag, encoding="utf8") as f:
+    FFLAG= 'a' if os.path.exists(fpath) else 'w'
+    with open(fpath, FFLAG, encoding="utf8") as f:
         f.write(parser.item.dump())
     parser.close()
 
