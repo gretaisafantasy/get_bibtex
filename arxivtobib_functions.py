@@ -405,14 +405,15 @@ if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
     arg_parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
-    arg_parser.add_argument('url',                              help='')
-    arg_parser.add_argument('-f', '--file', required=True,      help='ArXiV BibTeX input and output file; argument always ends in .bib.')   
+    arg_parser.add_argument('--url',                            help='')
+    arg_parser.add_argument('--a',     default='arxiv.bib',     help='ArXiV BibTeX input and output file; argument always ends in .bib.')   
     arg_parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--s',     default='springer.bib',  help='SpringerLink BibTeX input and output file; argument always ends in .bib.')
     args = arg_parser.parse_args()
 
+    arxiv_bibtex_file = args.a
     cogprints_bibtex_file = args.c
     dblp_bibtex_file = args.d
     microsoft_bibtex_file = args.m
@@ -426,6 +427,7 @@ if __name__ == '__main__':
         arg_parser.set_defaults(**defaults)
         args = arg_parser.parse_args()
 
+        arxiv_bibtex_file = args.a
         cogprints_bibtex_file = args.c
         dblp_bibtex_file = args.d
         microsoft_bibtex_file = args.m
@@ -435,14 +437,15 @@ if __name__ == '__main__':
     read_latex()
     open_url()
 
-    parser = MyHTMLParser()
-    response = opener.open(args.url)
-    parser.feed(response.read().decode('utf-8'))
-    response.close()
-    fpath = os.path.abspath(args.file)
-    FFLAG= 'a' if os.path.exists(fpath) else 'w'
-    with open(fpath, FFLAG, encoding="utf8") as f:
-        f.write(parser.item.dump())
-    parser.close()
+    if args.url:
+        parser = MyHTMLParser()
+        response = opener.open(args.url)
+        parser.feed(response.read().decode('utf-8'))
+        response.close()
+        fpath = os.path.abspath(args.file)
+        FFLAG= 'a' if os.path.exists(fpath) else 'w'
+        with open(fpath, FFLAG, encoding="utf8") as f:
+            f.write(parser.item.dump())
+        parser.close()
 
     print('\nAll done. :-)')
