@@ -442,9 +442,9 @@ if __name__ == '__main__':
         response = opener.open(args.url)
         parser.feed(response.read().decode('utf-8'))
         response.close()
-        fpath = os.path.abspath(args.file)
-        FFLAG= 'a' if os.path.exists(fpath) else 'w'
-        with open(fpath, FFLAG, encoding="utf8") as f:
+        apath = os.path.abspath(args.a)
+        FFLAG= 'a' if os.path.exists(apath) else 'w'
+        with open(apath, FFLAG, encoding="utf8") as f:
             f.write(parser.item.dump())
         parser.close()
 
