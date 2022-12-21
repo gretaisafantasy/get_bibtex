@@ -60,13 +60,11 @@ class BibItem():
         assert isinstance(bibtype, str)
         self.bibtype = bibtype
         self.field = dict()
-        return
 
     def add(self, dic):
         assert isinstance(dic, dict)
         for k, v in dic.items():
             self.field[k] = self.field.get(k, '') + v
-        return
 
     def gen_key(self):
         key = ''
@@ -99,13 +97,11 @@ class AbstParser(object):
     def __init__(self):
         self.parse = self.parse_main
         self.text = ''
-        return
 
     def feed(self, text):
         i = 0
         while i < len(text):
             (self.parse, i) = self.parse(text, i)
-        return
 
     def parse_main(self, text, i):
         c = text[i]
@@ -183,7 +179,6 @@ class MyHTMLParser(HTMLParser):
         self.stack = []
         self.in_descriptor = False
         self.tmp = dict()
-        return
 
     def handle_starttag(self, tag, attrs):
         for attr in attrs:
@@ -191,7 +186,6 @@ class MyHTMLParser(HTMLParser):
                 self.stack.append({'tag': tag, 'class': attr[1]})
             if attr[1] == "descriptor":
                 self.in_descriptor = True
-        return
 
     def handle_endtag(self, tag):
         if self.in_descriptor and tag == "span":
@@ -199,7 +193,6 @@ class MyHTMLParser(HTMLParser):
         if self.stack and tag == self.stack[-1]['tag']:
             s = self.stack.pop()
             self.item.add(normalize(s['class'], self.tmp))
-        return
 
     def handle_data(self, data):
         for c in some_classes:
@@ -207,7 +200,6 @@ class MyHTMLParser(HTMLParser):
                 continue
             if self.stack and self.stack[-1]['class'] == c:
                 self.tmp[c] = self.tmp.get(c, '') + data
-        return
 
 
 def return_bibtex():
@@ -406,7 +398,7 @@ if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
     arg_parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
     arg_parser.add_argument('--url',                            help='')
-    arg_parser.add_argument('--a',     default='arxiv.bib',     help='ArXiV BibTeX input and output file; argument always ends in .bib.')   
+    arg_parser.add_argument('--a',     default='arxiv.bib',     help='ArXiV BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--m',     default='microsoft.bib', help='Microsoft Research BibTeX input and output file; argument always ends in .bib.')
