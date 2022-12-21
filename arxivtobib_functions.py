@@ -93,7 +93,7 @@ class BibItem():
         d += '}\n'
         return d
 
-class AbstParser(object):
+class AbstParser():
     def __init__(self):
         self.parse = self.parse_main
         self.text = ''
