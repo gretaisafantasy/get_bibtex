@@ -397,7 +397,7 @@ if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
     arg_parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
-    arg_parser.add_argument('--url', nargs='+',                  help='')
+    arg_parser.add_argument('--url',   nargs='+',               help='ArXiV URL.')
     arg_parser.add_argument('--a',     default='arxiv.bib',     help='ArXiV BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
