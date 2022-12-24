@@ -43,6 +43,9 @@ ignore_tex_files = set()  # files within the directory that should be ignored
 known_keys = set([])
 unused_keys = set([])
 
+arxiv_keys = set([])
+fetched_arxiv_keys = set([])
+
 cogprints_keys = set([])
 fetched_cogprints_keys = set([])
 
@@ -63,8 +66,8 @@ class BibItem():
 
     def add(self, dic):
         assert isinstance(dic, dict)
-        for k, v in dic.items():
-            self.field[k] = self.field.get(k, '') + v
+        for key, value in dic.items():
+            self.field[key] = self.field.get(key, '') + value
 
     def gen_key(self):
         key = ''
@@ -86,12 +89,12 @@ class BibItem():
         return key
 
     def dump(self):
-        d = f'@{self.bibtype}{{{self.gen_key()}'
-        for k, v in self.field.items():
-            if v not in ['', None]:
-                d += f',\n{k}={{{v}}}'
-        d += '}\n'
-        return d
+        dic = f'@{self.bibtype}{{{self.gen_key()}'
+        for key, value in self.field.items():
+            if value not in ['', None]:
+                dic += f',\n{key}={{{value}}}'
+        dic += '}\n'
+        return dic
 
 class AbstParser():
     def __init__(self):
@@ -191,8 +194,8 @@ class MyHTMLParser(HTMLParser):
         if self.in_descriptor and tag == "span":
             self.in_descriptor = False
         if self.stack and tag == self.stack[-1]['tag']:
-            s = self.stack.pop()
-            self.item.add(normalize(s['class'], self.tmp))
+            stack = self.stack.pop()
+            self.item.add(normalize(stack['class'], self.tmp))
 
     def handle_data(self, data):
         for c in some_classes:
@@ -397,7 +400,7 @@ if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
     arg_parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
-    arg_parser.add_argument('--url',   nargs='+',               help='ArXiV URL.')
+    arg_parser.add_argument('--url',                            help='ArXiV URL.')
     arg_parser.add_argument('--a',     default='arxiv.bib',     help='ArXiV BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
@@ -431,13 +434,14 @@ if __name__ == '__main__':
 
     if args.url:
         parser = MyHTMLParser()
-        response = opener.open(args.url[0])
+        response = opener.open(args.url)
         parser.feed(response.read().decode('utf-8'))
         response.close()
         apath = os.path.abspath(args.a)
-        FFLAG= 'a' if os.path.exists(apath) else 'w'
-        with open(apath, FFLAG, encoding="utf8") as f:
+        AFLAG= 'a' if os.path.exists(apath) else 'w'
+        with open(apath, AFLAG, encoding="utf8") as f:
             f.write(parser.item.dump())
+            f.write('\n')
         parser.close()
 
     print('\nAll done. :-)')
