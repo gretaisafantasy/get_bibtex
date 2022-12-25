@@ -62,7 +62,7 @@ class BibItem():
     def __init__(self, bibtype):
         assert isinstance(bibtype, str)
         self.bibtype = bibtype
-        self.field = dict()
+        self.field = {}
 
     def add(self, dic):
         assert isinstance(dic, dict)
@@ -77,14 +77,14 @@ class BibItem():
             authors = self.field['author'].split('and')
             for author in authors:
                 cnt = 0
-                for w in author.split():
-                    if cnt < len(w):
-                        (cnt, name) = (len(w), w.strip(',.'))
+                for words in author.split():
+                    if cnt < len(words):
+                        (cnt, name) = (len(words), words.strip(',.'))
                         key += name
         if 'title' in self.field:
-            for w in self.field['title'].split():
-                key += w.title()
-                if len(w) > 4:
+            for words in self.field['title'].split():
+                key += words.title()
+                if len(words) > 4:
                     break
         return key
 
@@ -141,7 +141,7 @@ class AbstParser():
 def normalize(cls, dic):
     assert cls in dic
     value = dic[cls]
-    result = dict()
+    result = {}
     if cls == 'title mathjax':
         result['title'] = value.strip('\n')
     elif cls == 'authors':
@@ -159,10 +159,10 @@ def normalize(cls, dic):
         c = cls.partition('tablecell ')[-1]
         if c == 'arxivid':
             result['eprint'] = value
-            m = ARXIV_ID_RE.match(value)
-            result['url'] = f'http://arxiv.org/abs/{(m.group(1))}'
-            result['year'] = f'20{(m.group(2))}'
-            result['month'] = calendar.month_abbr[int(m.group(3))]
+            matches = ARXIV_ID_RE.match(value)
+            result['url'] = f'http://arxiv.org/abs/{(matches.group(1))}'
+            result['year'] = f'20{(matches.group(2))}'
+            result['month'] = calendar.month_abbr[int(matches.group(3))]
         elif c == 'doi':
             result[c] = value
             result['doi-url'] = f'http://dx.doi.org/{value}'
@@ -181,7 +181,7 @@ class MyHTMLParser(HTMLParser):
         self.item = BibItem('misc')
         self.stack = []
         self.in_descriptor = False
-        self.tmp = dict()
+        self.tmp = {}
 
     def handle_starttag(self, tag, attrs):
         for attr in attrs:
