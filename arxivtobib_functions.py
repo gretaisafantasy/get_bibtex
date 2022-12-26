@@ -66,8 +66,8 @@ class BibItem():
 
     def add(self, dic):
         assert isinstance(dic, dict)
-        for key, value in dic.items():
-            self.field[key] = self.field.get(key, '') + value
+        for key, val in dic.items():
+            self.field[key] = self.field.get(key, '') + val
 
     def gen_key(self):
         key = ''
@@ -90,9 +90,9 @@ class BibItem():
 
     def dump(self):
         dic = f'@{self.bibtype}{{{self.gen_key()}'
-        for key, value in self.field.items():
-            if value not in ['', None]:
-                dic += f',\n{key}={{{value}}}'
+        for key, val in self.field.items():
+            if val not in ['', None]:
+                dic += f',\n{key}={{{val}}}'
         dic += '}\n'
         return dic
 
@@ -107,67 +107,67 @@ class AbstParser():
             (self.parse, i) = self.parse(text, i)
 
     def parse_main(self, text, i):
-        c = text[i]
-        if c == '"':
+        char = text[i]
+        if char == '"':
             self.text += '``'
             return (self.parse_quote, i+1)
-        if c == '-':
+        if char == '-':
             return (self.parse_hyphen, i+1)
         else:
-            if c == '\n':
+            if char == '\n':
                 self.text += ' '
             else:
-                self.text += c
+                self.text += char
             return (self.parse_main, i+1)
 
     def parse_quote(self, text, i):
-        c = text[i]
-        if c == '"':
+        char = text[i]
+        if char == '"':
             self.text += '\'\''
             return (self.parse_main, i+1)
         else:
-            if c == '\n':
+            if char == '\n':
                 self.text += ' '
             else:
-                self.text += c
+                self.text += char
             return (self.parse_quote, i+1)
 
     def parse_hyphen(self, text, i):
-        c = text[i]
-        if c not in (' ', '\n'):
+        char = text[i]
+        if char not in (' ', '\n'):
             self.text += '-'
         return (self.parse_main, i+1)
 
 def normalize(cls, dic):
     assert cls in dic
-    value = dic[cls]
+    val = dic[cls]
     result = {}
     if cls == 'title mathjax':
-        result['title'] = value.strip('\n')
+        result['title'] = val.strip('\n')
     elif cls == 'authors':
         result['author'] = ''
-        for c in value.strip('\n'):
-            if c == ',':
+        for char in val.strip('\n'):
+            if char == ',':
                 result['author'] += ' and '
             else:
-                result['author'] += c
+                result['author'] += char
     elif cls == 'abstract mathjax':
         parser = AbstParser()
-        parser.feed(value.strip())
+        parser.feed(val.strip())
         result['abstract'] = parser.text
     if cls.startswith('tablecell '):
-        c = cls.partition('tablecell ')[-1]
-        if c == 'arxivid':
-            result['eprint'] = value
-            matches = ARXIV_ID_RE.match(value)
+        char = cls.partition('tablecell ')[-1]
+        if char == 'arxivid':
+            result['eprint'] = val
+            matches = ARXIV_ID_RE.match(val)
             result['url'] = f'http://arxiv.org/abs/{(matches.group(1))}'
             result['year'] = f'20{(matches.group(2))}'
             result['month'] = calendar.month_abbr[int(matches.group(3))]
-        elif c == 'doi':
-            result[c] = value
-            result['doi-url'] = f'http://dx.doi.org/{value}'
+        elif char == 'doi':
+            result[char] = val
+            result['doi-url'] = f'http://dx.doi.org/{val}'
         else:
-            result[c] = dic[cls]
+            result[char] = dic[cls]
     return result
 
 some_classes = ('title mathjax', 'authors', 'abstract mathjax',
@@ -198,11 +198,11 @@ class MyHTMLParser(HTMLParser):
             self.item.add(normalize(stack['class'], self.tmp))
 
     def handle_data(self, data):
-        for c in some_classes:
+        for char in some_classes:
             if self.in_descriptor:
                 continue
-            if self.stack and self.stack[-1]['class'] == c:
-                self.tmp[c] = self.tmp.get(c, '') + data
+            if self.stack and self.stack[-1]['class'] == char:
+                self.tmp[char] = self.tmp.get(char, '') + data
 
 
 def return_bibtex():
