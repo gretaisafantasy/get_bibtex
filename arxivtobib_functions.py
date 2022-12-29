@@ -227,6 +227,7 @@ def read_existing_file(name_bibtex_file):
 
 def read_all_existing_files():
     """Compiles and reads all of the existing bibliography BibTex files"""
+    read_existing_file(arxiv_bibtex_file)
     read_existing_file(cogprints_bibtex_file)
     read_existing_file(dblp_bibtex_file)
     read_existing_file(microsoft_bibtex_file)
@@ -252,6 +253,7 @@ def find_keys(name, name_keys):
 
 def find_all_keys():
     """Calls on the previous functions of finding the keys of all the bibliographies"""
+    find_keys('arXiv', arxiv_keys)
     find_keys('Cogprints', cogprints_keys)
     find_keys('DBLP', dblp_keys)
     find_keys('Microsoft Research', microsoft_keys)
@@ -277,7 +279,9 @@ def read_latex():
                     for match in re.finditer(return_tex_citation(), line):
                         for group in match.groups():
                             for key in group.split(','):
-                                if key.strip().startswith('Cogprints:'):
+                                if key.strip().startswith('Arxiv:'):
+                                    arxiv_keys.add(key.strip())
+                                elif key.strip().startswith('Cogprints:'):
                                     cogprints_keys.add(key.strip())
                                 elif key.strip().startswith('DBLP:'):
                                     dblp_keys.add(key.strip())
@@ -333,6 +337,18 @@ def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_ke
                     fetched_name_keys.add(key)
                 else:
                     print(f'(not adding {key} to {name} BibTeX file, it is already there.)')
+
+
+def open_arxiv_url():
+    """Opens arXiv BibTeX file from its website"""
+    for unknown_arxiv_key in check_missing_keys(arxiv_bibtex_file, arxiv_keys, 'arXiv'):
+        print (f'{unknown_arxiv_key}')
+
+        arxiv_url = f'https://arxiv.org/abs/{unknown_arxiv_key[10:]}.bib.html'
+
+        with req.urlopen(arxiv_url) as res:
+            arxiv_bibtex_file_content = res.read().decode('utf-8')
+            open_bibtex_file(arxiv_bibtex_file, arxiv_bibtex_file_content, fetched_arxiv_keys, 'arXiv')
 
 
 def open_cogprints_url():
