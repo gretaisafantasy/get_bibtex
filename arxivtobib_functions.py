@@ -344,7 +344,7 @@ def open_arxiv_url():
     for unknown_arxiv_key in check_missing_keys(arxiv_bibtex_file, arxiv_keys, 'arXiv'):
         print (f'{unknown_arxiv_key}')
 
-        arxiv_url = f'https://arxiv.org/abs/{unknown_arxiv_key[10:]}.bib.html'
+        arxiv_url = f'https://arxiv.org/abs/{unknown_arxiv_key[6:]}'
 
         with req.urlopen(arxiv_url) as res:
             arxiv_bibtex_file_content = res.read().decode('utf-8')
@@ -401,6 +401,7 @@ def open_springer_url():
 
 def open_url():
     """Calls on the previous functions of opening the BibTeX files from their website"""
+    open_arxiv_url()
     open_cogprints_url()
     open_dblp_url()
     open_microsoft_url()
