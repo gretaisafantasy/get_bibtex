@@ -65,11 +65,13 @@ class BibItem():
         self.field = {}
 
     def add(self, dic):
+        """Adds bibitem to the dictionary????"""
         assert isinstance(dic, dict)
         for key, val in dic.items():
             self.field[key] = self.field.get(key, '') + val
 
     def gen_key(self):
+        """Generates arXiv key????"""
         key = ''
         if 'year' in self.field:
             key += self.field['year']
@@ -346,9 +348,16 @@ def open_arxiv_url():
 
         arxiv_url = f'https://arxiv.org/abs/{unknown_arxiv_key[6:]}'
 
-        with req.urlopen(arxiv_url) as res:
-            arxiv_bibtex_file_content = res.read().decode('utf-8')
-            open_bibtex_file(arxiv_bibtex_file, arxiv_bibtex_file_content, fetched_arxiv_keys, 'arXiv')
+        parser = MyHTMLParser()
+        response = opener.open(arxiv_url)
+        parser.feed(response.read().decode('utf-8'))
+        response.close()
+        apath = os.path.abspath(args.a)
+        AFLAG= 'a' if os.path.exists(apath) else 'w'
+        with open(apath, AFLAG, encoding="utf8") as f:
+            f.write(parser.item.dump())
+            f.write('\n')
+        parser.close()
 
 
 def open_cogprints_url():
