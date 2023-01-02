@@ -59,6 +59,7 @@ springer_keys = set([])
 fetched_springer_keys = set([])
 
 class BibItem():
+    """????"""
     def __init__(self, bibtype):
         assert isinstance(bibtype, str)
         self.bibtype = bibtype
@@ -91,6 +92,7 @@ class BibItem():
         return key
 
     def dump(self):
+        """????"""
         dic = f'@{self.bibtype}{{{self.gen_key()}'
         for key, val in self.field.items():
             if val not in ['', None]:
@@ -99,16 +101,19 @@ class BibItem():
         return dic
 
 class AbstParser():
+    """????"""
     def __init__(self):
         self.parse = self.parse_main
         self.text = ''
 
     def feed(self, text):
+        """????"""
         i = 0
         while i < len(text):
             (self.parse, i) = self.parse(text, i)
 
     def parse_main(self, text, i):
+        """????"""
         char = text[i]
         if char == '"':
             self.text += '``'
@@ -123,6 +128,7 @@ class AbstParser():
             return (self.parse_main, i+1)
 
     def parse_quote(self, text, i):
+        """????"""
         char = text[i]
         if char == '"':
             self.text += '\'\''
@@ -135,12 +141,14 @@ class AbstParser():
             return (self.parse_quote, i+1)
 
     def parse_hyphen(self, text, i):
+        """????"""
         char = text[i]
         if char not in (' ', '\n'):
             self.text += '-'
         return (self.parse_main, i+1)
 
 def normalize(cls, dic):
+    """????"""
     assert cls in dic
     val = dic[cls]
     result = {}
@@ -178,6 +186,7 @@ some_classes = ('title mathjax', 'authors', 'abstract mathjax',
                 'tablecell msc-classes', 'tablecell acm-classes')
 
 class MyHTMLParser(HTMLParser):
+    """????"""
     def __init__(self):
         HTMLParser.__init__(self)
         self.item = BibItem('misc')
@@ -186,6 +195,7 @@ class MyHTMLParser(HTMLParser):
         self.tmp = {}
 
     def handle_starttag(self, tag, attrs):
+        """Handles the start of a tag"""
         for attr in attrs:
             if attr[1] in some_classes:
                 self.stack.append({'tag': tag, 'class': attr[1]})
@@ -193,6 +203,7 @@ class MyHTMLParser(HTMLParser):
                 self.in_descriptor = True
 
     def handle_endtag(self, tag):
+        """Handles the end of a tag"""
         if self.in_descriptor and tag == "span":
             self.in_descriptor = False
         if self.stack and tag == self.stack[-1]['tag']:
@@ -200,6 +211,7 @@ class MyHTMLParser(HTMLParser):
             self.item.add(normalize(stack['class'], self.tmp))
 
     def handle_data(self, data):
+        """Handles the text contents of each tag????"""
         for char in some_classes:
             if self.in_descriptor:
                 continue
@@ -353,10 +365,10 @@ def open_arxiv_url():
         parser.feed(response.read().decode('utf-8'))
         response.close()
         apath = os.path.abspath(args.a)
-        AFLAG= 'a' if os.path.exists(apath) else 'w'
-        with open(apath, AFLAG, encoding="utf8") as f:
-            f.write(parser.item.dump())
-            f.write('\n')
+        aflag = 'a' if os.path.exists(apath) else 'w'
+        with open(apath, aflag, encoding="utf8") as file:
+            file.write(parser.item.dump())
+            file.write('\n')
         parser.close()
 
 
@@ -426,7 +438,6 @@ if __name__ == '__main__':
 
     arg_parser = argparse.ArgumentParser(description='Create BibTeX input and output files.')
     arg_parser.add_argument('--config',                         help='Configuration file; file header always starts with "[Defaults]".')
-    arg_parser.add_argument('--url',                            help='ArXiV URL.')
     arg_parser.add_argument('--a',     default='arxiv.bib',     help='ArXiV BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--c',     default='cogprints.bib', help='Cogprints BibTeX input and output file; argument always ends in .bib.')
     arg_parser.add_argument('--d',     default='dblp.bib',      help='DBLP BibTeX input and output file; argument always ends in .bib.')
@@ -457,17 +468,5 @@ if __name__ == '__main__':
     read_all_existing_files()
     read_latex()
     open_url()
-
-    if args.url:
-        parser = MyHTMLParser()
-        response = opener.open(args.url)
-        parser.feed(response.read().decode('utf-8'))
-        response.close()
-        apath = os.path.abspath(args.a)
-        AFLAG= 'a' if os.path.exists(apath) else 'w'
-        with open(apath, AFLAG, encoding="utf8") as f:
-            f.write(parser.item.dump())
-            f.write('\n')
-        parser.close()
 
     print('\nAll done. :-)')
