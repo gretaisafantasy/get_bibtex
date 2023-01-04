@@ -381,7 +381,6 @@ def open_cogprints_url():
 
         with req.urlopen(cogprints_url) as res:
             cogprints_bibtex_file_content = res.read().decode('utf-8')
-            ## print(cogprints_bibtex_file_content)
             open_bibtex_file(cogprints_bibtex_file, cogprints_bibtex_file_content, fetched_cogprints_keys, 'Cogprints')
 
 
