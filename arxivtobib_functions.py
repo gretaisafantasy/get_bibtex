@@ -360,16 +360,16 @@ def open_arxiv_url():
 
         arxiv_url = f'https://arxiv.org/abs/{unknown_arxiv_key[6:]}'
 
-        parser = MyHTMLParser()
-        response = opener.open(arxiv_url)
-        parser.feed(response.read().decode('utf-8'))
-        response.close()
-        apath = os.path.abspath(args.a)
-        aflag = 'a' if os.path.exists(apath) else 'w'
-        with open(apath, aflag, encoding="utf8") as file:
-            file.write(parser.item.dump())
-            file.write('\n')
-        parser.close()
+        with req.urlopen(arxiv_url) as res:
+            arxiv_bibtex_file_content = MyHTMLParser()
+            arxiv_bibtex_file_content.feed(res.read().decode('utf-8'))
+            ## print(arxiv_bibtex_file_content) == <__main__.MyHTMLParser object at 0x00000174D5DD28C0>
+            res.close()
+            with open(arxiv_bibtex_file, 'a', encoding="utf8") as file:
+                arxiv_content = file.write(arxiv_bibtex_file_content.item.dump())
+                ## print(arxiv_content) == 1707
+                file.write('\n')
+            arxiv_bibtex_file_content.close()
 
 
 def open_cogprints_url():
@@ -381,6 +381,7 @@ def open_cogprints_url():
 
         with req.urlopen(cogprints_url) as res:
             cogprints_bibtex_file_content = res.read().decode('utf-8')
+            ## print(cogprints_bibtex_file_content)
             open_bibtex_file(cogprints_bibtex_file, cogprints_bibtex_file_content, fetched_cogprints_keys, 'Cogprints')
 
 
