@@ -186,7 +186,7 @@ some_classes = ('title mathjax', 'authors', 'abstract mathjax',
                 'tablecell msc-classes', 'tablecell acm-classes')
 
 class MyHTMLParser(HTMLParser):
-    """????"""
+    """Basis for parsing text files formatted in HTML"""
     def __init__(self):
         HTMLParser.__init__(self)
         self.item = BibItem('misc')
@@ -211,7 +211,7 @@ class MyHTMLParser(HTMLParser):
             self.item.add(normalize(stack['class'], self.tmp))
 
     def handle_data(self, data):
-        """Handles the text contents of each tag????"""
+        """Handles the text contents of the tags"""
         for char in some_classes:
             if self.in_descriptor:
                 continue
@@ -363,12 +363,16 @@ def open_arxiv_url():
         with req.urlopen(arxiv_url) as res:
             arxiv_bibtex_file_content = MyHTMLParser()
             arxiv_bibtex_file_content.feed(res.read().decode('utf-8'))
-            ## print(arxiv_bibtex_file_content) == <__main__.MyHTMLParser object at 0x00000174D5DD28C0>
             res.close()
+            
             with open(arxiv_bibtex_file, 'a', encoding="utf8") as file:
-                arxiv_content = file.write(arxiv_bibtex_file_content.item.dump())
-                ## print(arxiv_content) == 1707
+                file.write(arxiv_bibtex_file_content.item.dump())
                 file.write('\n')
+            with open(arxiv_bibtex_file, 'r', encoding="utf8") as file:
+                lines = dict.fromkeys(file.readlines())
+            with open(arxiv_bibtex_file, 'w', encoding="utf8") as file:
+                file.writelines(lines)
+
             arxiv_bibtex_file_content.close()
 
 
