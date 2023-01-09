@@ -93,7 +93,7 @@ class BibItem():
         return key
 
     def dump(self):
-        """Stores BibTeX items to the dictionary???"""
+        """Dumps BibTeX items and keys to the dictionary and returns it"""
         dic = f'@{self.bibtype}{{{self.gen_key()}'
         for key, val in self.field.items():
             if val not in ['', None]:
@@ -102,13 +102,13 @@ class BibItem():
         return dic
 
 class AbstParser():
-    """Abstract basis for parsing text files"""
+    """Abstract basis for parsing texts"""
     def __init__(self):
         self.parse = self.parse_main
         self.text = ''
 
     def feed(self, text):
-        """????"""
+        """Receives data from the texts"""
         i = 0
         while i < len(text):
             (self.parse, i) = self.parse(text, i)
@@ -149,7 +149,7 @@ class AbstParser():
         return (self.parse_main, i+1)
 
 def normalize(cls, dic):
-    """Normalizes and returns the results of the texts"""
+    """Normalizes and returns the results of the text"""
     assert cls in dic
     val = dic[cls]
     result = {}
@@ -219,12 +219,10 @@ class MyHTMLParser(HTMLParser):
             if self.stack and self.stack[-1]['class'] == char:
                 self.tmp[char] = self.tmp.get(char, '') + data
 
-
 def return_bibtex():
     """Compiles and returns the BibTeX file citations"""
     re_bibtex_citations = re.compile(r'@.*\{([^,]*),')
     return re_bibtex_citations
-
 
 def read_existing_file(name_bibtex_file):
     """Reads the existing BibTeX file or create a new one if it is not found"""
@@ -239,7 +237,6 @@ def read_existing_file(name_bibtex_file):
     else:
         print(f'\nBibTeX file {name_bibtex_file} not found, will try to create it.')
 
-
 def read_all_existing_files():
     """Compiles and reads all of the existing bibliography BibTex files"""
     read_existing_file(arxiv_bibtex_file)
@@ -252,19 +249,16 @@ def read_all_existing_files():
     for key in known_keys:
         print (f'{key}')
 
-
 def return_tex_citation():
     """Compiles and returns the LateX citations"""
     re_tex_citation = re.compile(r'(?:cite|citep|citet|fullciteown|autocite|textcite)\{([^}]+)}')
     return re_tex_citation
-
 
 def find_keys(name, name_keys):
     """Finds the bibliography keys in the LaTeX files"""
     print(f'\nThe following {name} keys have been found in your LaTeX files:')
     for key in name_keys:
         print (f'{key}')
-
 
 def find_all_keys():
     """Calls on the previous functions of finding the keys of all the bibliographies"""
@@ -274,7 +268,6 @@ def find_all_keys():
     find_keys('Microsoft Research', microsoft_keys)
     find_keys('SpringerLink', springer_keys)
     find_keys('unused', unused_keys)
-
 
 def read_latex():
     """Reads the LateX documents and adds the corresponding keys"""
@@ -309,25 +302,21 @@ def read_latex():
 
     find_all_keys()
 
-
 def compile_bibtex_items():
     """Compiles the BibTeX items"""
     re_bibtex_items = re.compile(r'(@[a-zA-Z]+\{[^@]*\n})', re.DOTALL)
     return re_bibtex_items
-
 
 def compile_bibtex_item_key():
     """Compiles the BibTeX item key"""
     re_bibtex_item_key = re.compile(r'@[a-zA-Z]+\{([^,]+),\s*', re.DOTALL)
     return re_bibtex_item_key
 
-
 def find_missing_keys(name):
     """Finds the missing keys from the bibliography"""
     print(f'\nFetching BibTeX records for missing keys from {name}:')
     compile_bibtex_items()
     compile_bibtex_item_key()
-
 
 def check_missing_keys(name_bibtex_file, name_keys, name):
     """Checks for missing keys in the BibTeX file"""
@@ -338,7 +327,6 @@ def check_missing_keys(name_bibtex_file, name_keys, name):
     else:
         find_missing_keys(name)
     return name_keys
-
 
 def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_keys, name):
     """Opens the BibTeX file for the bibliography and writes it to our BibTeX file if it is not already there"""
@@ -353,7 +341,6 @@ def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_ke
                 else:
                     print(f'(not adding {key} to {name} BibTeX file, it is already there.)')
 
-
 def open_arxiv_url():
     """Opens arXiv BibTeX file from its website"""
     for unknown_arxiv_key in check_missing_keys(arxiv_bibtex_file, arxiv_keys, 'arXiv'):
@@ -365,7 +352,7 @@ def open_arxiv_url():
             arxiv_bibtex_file_content = MyHTMLParser()
             arxiv_bibtex_file_content.feed(res.read().decode('utf-8'))
             res.close()
-            
+
             with open(arxiv_bibtex_file, 'a', encoding="utf8") as file:
                 file.write(arxiv_bibtex_file_content.item.dump())
                 file.write('\n')
@@ -375,7 +362,7 @@ def open_arxiv_url():
                 file.writelines(lines)
             arxiv_bibtex_file_content.close()
 
-    print (f'(Duplicate keys are not added to arXiV BibTeX file.)')
+    print ('(Duplicate keys are not added to arXiV BibTeX file.)')
 
 def open_cogprints_url():
     """Opens Cogprints BibTeX file from its website"""
@@ -388,7 +375,6 @@ def open_cogprints_url():
             cogprints_bibtex_file_content = res.read().decode('utf-8')
             open_bibtex_file(cogprints_bibtex_file, cogprints_bibtex_file_content, fetched_cogprints_keys, 'Cogprints')
 
-
 def open_dblp_url():
     """Opens DBLP BibTeX file from its website"""
     for unknown_dblp_key in check_missing_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
@@ -399,7 +385,6 @@ def open_dblp_url():
         with req.urlopen(dblp_url) as res:
             dblp_bibtex_file_content = res.read().decode('utf-8')
             open_bibtex_file(dblp_bibtex_file, dblp_bibtex_file_content, fetched_dblp_keys, 'DBLP')
-
 
 def open_microsoft_url():
     """Opens Microsoft Research BibTeX file from its website"""
@@ -412,7 +397,6 @@ def open_microsoft_url():
             microsoft_bibtex_file_content = res.read().decode('utf-8')
             open_bibtex_file(microsoft_bibtex_file, microsoft_bibtex_file_content, fetched_microsoft_keys, 'Microsoft Research')
 
-
 def open_springer_url():
     """Opens SpringerLink BibTeX file from its website"""
     for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'SpringerLink'):
@@ -423,7 +407,6 @@ def open_springer_url():
         with req.urlopen(springer_url) as res:
             springer_bibtex_file_content = res.read().decode('utf-8')
             open_bibtex_file(springer_bibtex_file, springer_bibtex_file_content, fetched_springer_keys, 'SpringerLink')
-
 
 def open_url():
     """Calls on the previous functions of opening the BibTeX files from their website"""
