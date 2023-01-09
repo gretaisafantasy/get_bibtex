@@ -80,13 +80,13 @@ if args.config:
 
 
 def return_bibtex():
-    """This function compiles and returns the BibTeX file citations"""
+    """Compiles and returns the BibTeX file citations"""
     re_bibtex_citations = re.compile(r'@.*\{([^,]*),')
     return re_bibtex_citations
 
 
 def read_existing_file(name_bibtex_file):
-    """This function reads the existing BibTeX file or create a new one if it is not found"""
+    """Reads the existing BibTeX file or create a new one if it is not found"""
     if os.path.isfile(name_bibtex_file):
         print(f'\nReading existing BibTeX file {name_bibtex_file}')
         with (open(name_bibtex_file, encoding="utf-8")) as file:
@@ -100,7 +100,7 @@ def read_existing_file(name_bibtex_file):
 
 
 def read_all_existing_files():
-    """This function compiles and reads all of the existing bibliography BibTex files"""
+    """Compiles and reads all of the existing bibliography BibTex files"""
     read_existing_file(cogprints_bibtex_file)
     read_existing_file(dblp_bibtex_file)
     read_existing_file(microsoft_bibtex_file)
@@ -114,29 +114,29 @@ read_all_existing_files()
 
 
 def return_tex_citation():
-    """This function compiles and returns the LateX citations"""
+    """Compiles and returns the LateX citations"""
     re_tex_citation = re.compile(r'(?:cite|citep|citet|fullciteown|autocite|textcite)\{([^}]+)}')
     return re_tex_citation
 
 
 def find_keys(name, name_keys):
-    """This function finds the bibliography keys in the LaTeX files"""
+    """Finds the bibliography keys in the LaTeX files"""
     print(f"\nThe following {name} keys have been found in your LaTeX files:")
     for key in name_keys:
         print (f'{key}')
 
 
 def find_all_keys():
-    """This function calls on the previous functions of finding the keys of all the bibliographies"""
+    """Calls on the previous functions of finding the keys of all the bibliographies"""
     find_keys('Cogprints', cogprints_keys)
     find_keys('DBLP', dblp_keys)
-    find_keys('Microsoft', microsoft_keys)
-    find_keys('Springer', springer_keys)
+    find_keys('Microsoft Research', microsoft_keys)
+    find_keys('SpringerLink', springer_keys)
     find_keys('unused', unused_keys)
 
 
 def read_latex():
-    """This function reads the LateX documents and adds the corresponding keys"""
+    """Reads the LateX documents and adds the corresponding keys"""
     print('\nReading your LaTeX documents:')
 
     return_tex_citation()
@@ -170,26 +170,26 @@ read_latex()
 
 
 def compile_bibtex_items():
-    """This function compiles the BibTeX items"""
+    """Compiles the BibTeX items"""
     re_bibtex_items = re.compile(r'(@[a-zA-Z]+\{[^@]*\n})', re.DOTALL)
     return re_bibtex_items
 
 
 def compile_bibtex_item_key():
-    """This function compiles the BibTeX item key"""
+    """Compiles the BibTeX item key"""
     re_bibtex_item_key = re.compile(r'@[a-zA-Z]+\{([^,]+),\s*', re.DOTALL)
     return re_bibtex_item_key
 
 
 def find_missing_keys(name):
-    """This function finds the missing keys from the bibliography"""
+    """Finds the missing keys from the bibliography"""
     print(f'\nFetching BibTeX records for missing keys from {name}:')
     compile_bibtex_items()
     compile_bibtex_item_key()
 
 
 def check_missing_keys(name_bibtex_file, name_keys, name):
-    """This function checks for missing keys in the BibTeX file"""
+    """Checks for missing keys in the BibTeX file"""
     if not os.path.isfile(name_bibtex_file) and name_keys == set():
         print (f'\nYou do not have a {name} BibTeX file, nothing needs to be fetched. :-)')
     elif name_keys == set():
@@ -200,7 +200,7 @@ def check_missing_keys(name_bibtex_file, name_keys, name):
 
 
 def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_keys, name):
-    """This function opens the BibTeX file for the bibliography and writes it to our BibTeX file if it is not already there"""
+    """Opens the BibTeX file for the bibliography and writes it to our BibTeX file if it is not already there"""
     with open(name_bibtex_file, 'a', encoding="utf8") as file:
         for match in re.finditer(compile_bibtex_items(), name_bibtex_file_content):
             for bibtex_item in match.groups():
@@ -214,7 +214,7 @@ def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_ke
 
 
 def open_cogprints_url():
-    """This function opens Cogprints BibTeX file from its website"""
+    """Opens Cogprints BibTeX file from its website"""
     for unknown_cogprints_key in check_missing_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
         print (f'{unknown_cogprints_key}')
 
@@ -226,7 +226,7 @@ def open_cogprints_url():
 
 
 def open_dblp_url():
-    """This function opens DBLP BibTeX file from its website"""
+    """Opens DBLP BibTeX file from its website"""
     for unknown_dblp_key in check_missing_keys(dblp_bibtex_file, dblp_keys, 'DBLP'):
         print (f'{unknown_dblp_key}')
 
@@ -238,31 +238,31 @@ def open_dblp_url():
 
 
 def open_microsoft_url():
-    """This function opens Microsoft Research BibTeX file from its website"""
-    for unknown_microsoft_key in check_missing_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft'):
+    """Opens Microsoft Research BibTeX file from its website"""
+    for unknown_microsoft_key in check_missing_keys(microsoft_bibtex_file, microsoft_keys, 'Microsoft Research'):
         print (f'{unknown_microsoft_key}')
 
         microsoft_url = f'https://www.microsoft.com/en-us/research/publication/{unknown_microsoft_key[10:]}/bibtex/'
 
         with req.urlopen(microsoft_url) as response:
             microsoft_bibtex_file_content = response.read().decode('utf-8')
-            open_bibtex_file(microsoft_bibtex_file, microsoft_bibtex_file_content, fetched_microsoft_keys, 'Microsoft')
+            open_bibtex_file(microsoft_bibtex_file, microsoft_bibtex_file_content, fetched_microsoft_keys, 'Microsoft Research')
 
 
 def open_springer_url():
-    """This function opens Springer BibTeX file from its website"""
-    for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'Springer'):
+    """Opens SpringerLink BibTeX file from its website"""
+    for unknown_springer_key in check_missing_keys(springer_bibtex_file, springer_keys, 'SpringerLink'):
         print (f'{unknown_springer_key}')
 
         springer_url = f'https://citation-needed.springer.com/v2/references/10.1007/{unknown_springer_key[9:]}'
 
         with req.urlopen(springer_url) as response:
             springer_bibtex_file_content = response.read().decode('utf-8')
-            open_bibtex_file(springer_bibtex_file, springer_bibtex_file_content, fetched_springer_keys, 'Springer')
+            open_bibtex_file(springer_bibtex_file, springer_bibtex_file_content, fetched_springer_keys, 'SpringerLink')
 
 
 def open_url():
-    """This function calls on the previous functions of opening the BibTeX files from their website"""
+    """Calls on the previous functions of opening the BibTeX files from their website"""
     open_cogprints_url()
     open_dblp_url()
     open_microsoft_url()
