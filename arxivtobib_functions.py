@@ -6,6 +6,7 @@
 # file. Tested with Python 3.10.
 #
 # Copyright (c) 2014 Sebastian Abshoff <sebastian@abshoff.it>
+#           (c) 2016 Akihiro Uchida
 #           (c) 2022 Greta Tanudjaja
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -59,20 +60,20 @@ springer_keys = set([])
 fetched_springer_keys = set([])
 
 class BibItem():
-    """????"""
+    """Represents BibTeX items"""
     def __init__(self, bibtype):
         assert isinstance(bibtype, str)
         self.bibtype = bibtype
         self.field = {}
 
     def add(self, dic):
-        """Adds bibitem to the dictionary????"""
+        """Adds BibTeX keys"""
         assert isinstance(dic, dict)
         for key, val in dic.items():
             self.field[key] = self.field.get(key, '') + val
 
     def gen_key(self):
-        """Generates arXiv key????"""
+        """Generates and returns the BibTeX keys"""
         key = ''
         if 'year' in self.field:
             key += self.field['year']
@@ -92,7 +93,7 @@ class BibItem():
         return key
 
     def dump(self):
-        """????"""
+        """Stores BibTeX items to the dictionary???"""
         dic = f'@{self.bibtype}{{{self.gen_key()}'
         for key, val in self.field.items():
             if val not in ['', None]:
@@ -101,7 +102,7 @@ class BibItem():
         return dic
 
 class AbstParser():
-    """????"""
+    """Abstract basis for parsing text files"""
     def __init__(self):
         self.parse = self.parse_main
         self.text = ''
@@ -113,7 +114,7 @@ class AbstParser():
             (self.parse, i) = self.parse(text, i)
 
     def parse_main(self, text, i):
-        """????"""
+        """Parses the main texts"""
         char = text[i]
         if char == '"':
             self.text += '``'
@@ -128,7 +129,7 @@ class AbstParser():
             return (self.parse_main, i+1)
 
     def parse_quote(self, text, i):
-        """????"""
+        """Parses the quote symbols in the texts"""
         char = text[i]
         if char == '"':
             self.text += '\'\''
@@ -141,14 +142,14 @@ class AbstParser():
             return (self.parse_quote, i+1)
 
     def parse_hyphen(self, text, i):
-        """????"""
+        """Parses the hyphen symbols in the texts"""
         char = text[i]
         if char not in (' ', '\n'):
             self.text += '-'
         return (self.parse_main, i+1)
 
 def normalize(cls, dic):
-    """????"""
+    """Normalizes and returns the results of the texts"""
     assert cls in dic
     val = dic[cls]
     result = {}
@@ -260,7 +261,7 @@ def return_tex_citation():
 
 def find_keys(name, name_keys):
     """Finds the bibliography keys in the LaTeX files"""
-    print(f"\nThe following {name} keys have been found in your LaTeX files:")
+    print(f'\nThe following {name} keys have been found in your LaTeX files:')
     for key in name_keys:
         print (f'{key}')
 
@@ -372,9 +373,9 @@ def open_arxiv_url():
                 lines = dict.fromkeys(file.readlines())
             with open(arxiv_bibtex_file, 'w', encoding="utf8") as file:
                 file.writelines(lines)
-
             arxiv_bibtex_file_content.close()
 
+    print (f'(Duplicate keys are not added to arXiV BibTeX file.)')
 
 def open_cogprints_url():
     """Opens Cogprints BibTeX file from its website"""
