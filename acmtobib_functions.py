@@ -37,6 +37,7 @@ import argparse
 import configparser
 import calendar
 
+ACM_ID_RE = re.compile(r'ACM:((\d\d)(\d\d)\.\d+)')
 ARXIV_ID_RE = re.compile(r'arXiv:((\d\d)(\d\d)\.\d+)')
 TEX_FILES_DIRECTORY = './'  # (sub)directory containing the .tex files
 ignore_tex_files = set()  # files within the directory that should be ignored
@@ -353,7 +354,7 @@ def open_acm_url():
     for unknown_acm_key in check_missing_keys(acm_bibtex_file, acm_keys, 'ACM'):
         print (f'{unknown_acm_key}')
 
-        acm_url = f'https://arxiv.org/abs/{unknown_acm_key[6:]}'
+        acm_url = f'https://dl.acm.org/doi/10.1145/{unknown_acm_key[20:]}'
 
         with req.urlopen(acm_url) as res:
             acm_bibtex_file_content = MyHTMLParser()
@@ -440,6 +441,7 @@ def open_springer_url():
 
 def open_url():
     """Calls on the previous functions of opening the BibTeX files from their website"""
+    open_acm_url()
     open_arxiv_url()
     open_cogprints_url()
     open_dblp_url()
