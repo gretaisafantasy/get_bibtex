@@ -9,12 +9,20 @@
 
 [WIP] This script collects various online bibliographies (Cogprints, DBLP, Microsoft, and Springer) citation keys from all .tex files and downloads the missing BibTeX records to a separate BibTeX file for each of the bibliographies.
 
-## Installation
+## Getting Started
 
-Make sure you have [Python 3.10](https://www.python.org/downloads/) installed on your system.
+### Dependencies
+
+[Python 3.10](https://www.python.org/downloads/)
+
+### Installation
+
+
 
 ## Usage
 
+## Configuration
+
 ## License
 
-This project is licensed under the MIT License.
+Licensed under the MIT License.
