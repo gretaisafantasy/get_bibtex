@@ -218,7 +218,7 @@ def open_cogprints_url():
     for unknown_cogprints_key in check_missing_keys(cogprints_bibtex_file, cogprints_keys, 'Cogprints'):
         print (f'{unknown_cogprints_key}')
 
-        cogprints_url = f'https://web-archive.southampton.ac.uk/cogprints.org/{unknown_cogprints_key[10:]}.bib.html'
+        cogprints_url = f'https://web-archive.southampton.ac.uk/cogprints.org/cgi/export/eprint/{unknown_cogprints_key[10:]}.bib.html'
 
         with req.urlopen(cogprints_url) as response:
             cogprints_bibtex_file_content = response.read().decode('utf-8')
@@ -264,9 +264,6 @@ def open_springer_url():
 def open_url():
     """Calls on the previous functions of opening the BibTeX files from their website"""
     open_cogprints_url()
-    open_dblp_url()
-    open_microsoft_url()
-    open_springer_url()
 
 open_url()
 
