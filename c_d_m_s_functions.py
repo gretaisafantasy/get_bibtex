@@ -264,6 +264,9 @@ def open_springer_url():
 def open_url():
     """Calls on the previous functions of opening the BibTeX files from their website"""
     open_cogprints_url()
+    open_dblp_url()
+    open_microsoft_url()
+    open_springer_url()
 
 open_url()
 
