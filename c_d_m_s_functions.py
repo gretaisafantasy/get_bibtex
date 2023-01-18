@@ -199,13 +199,15 @@ def check_missing_keys(name_bibtex_file, name_keys, name):
     return name_keys
 
 
-def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_keys, name):
+def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_keys, unknown_name_key, name):
     """Opens the BibTeX file for the bibliography and writes it to our BibTeX file if it is not already there"""
     with open(name_bibtex_file, 'a', encoding="utf8") as file:
         for match in re.finditer(compile_bibtex_items(), name_bibtex_file_content):
             for bibtex_item in match.groups():
                 key = re.match(compile_bibtex_item_key(), bibtex_item).group(1)
                 if key not in fetched_name_keys | known_keys:
+                    file.write(f'@misc{{{unknown_name_key}, crossref = {{{key}}}}}')
+                    file.write('\n\n')
                     file.write(bibtex_item)
                     file.write('\n\n')
                     fetched_name_keys.add(key)
@@ -222,8 +224,7 @@ def open_cogprints_url():
 
         with req.urlopen(cogprints_url) as response:
             cogprints_bibtex_file_content = response.read().decode('utf-8')
-            open_bibtex_file(cogprints_bibtex_file, cogprints_bibtex_file_content, fetched_cogprints_keys, 'Cogprints')
-
+            open_bibtex_file(cogprints_bibtex_file, cogprints_bibtex_file_content, fetched_cogprints_keys, unknown_cogprints_key, 'Cogprints')
 
 def open_dblp_url():
     """Opens DBLP BibTeX file from its website"""
@@ -234,7 +235,7 @@ def open_dblp_url():
 
         with req.urlopen(dblp_url) as response:
             dblp_bibtex_file_content = response.read().decode('utf-8')
-            open_bibtex_file(dblp_bibtex_file, dblp_bibtex_file_content, fetched_dblp_keys, 'DBLP')
+            open_bibtex_file(dblp_bibtex_file, dblp_bibtex_file_content, fetched_dblp_keys, unknown_dblp_key, 'DBLP')
 
 
 def open_microsoft_url():
@@ -246,7 +247,7 @@ def open_microsoft_url():
 
         with req.urlopen(microsoft_url) as response:
             microsoft_bibtex_file_content = response.read().decode('utf-8')
-            open_bibtex_file(microsoft_bibtex_file, microsoft_bibtex_file_content, fetched_microsoft_keys, 'Microsoft Research')
+            open_bibtex_file(microsoft_bibtex_file, microsoft_bibtex_file_content, fetched_microsoft_keys, unknown_microsoft_key, 'Microsoft Research')
 
 
 def open_springer_url():
@@ -258,7 +259,7 @@ def open_springer_url():
 
         with req.urlopen(springer_url) as response:
             springer_bibtex_file_content = response.read().decode('utf-8')
-            open_bibtex_file(springer_bibtex_file, springer_bibtex_file_content, fetched_springer_keys, 'SpringerLink')
+            open_bibtex_file(springer_bibtex_file, springer_bibtex_file_content, fetched_springer_keys, unknown_springer_key, 'SpringerLink')
 
 
 def open_url():
