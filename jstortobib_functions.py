@@ -348,6 +348,16 @@ def open_bibtex_file(name_bibtex_file, name_bibtex_file_content, fetched_name_ke
                 else:
                     print(f'(not adding {key} to {name} BibTeX file, it is already there.)')
 
+def open_bibtex_file_parser(name_bibtex_file, name_bibtex_file_content):
+    """Opens the BibTeX file for the bibliography that uses HTML Parser and writes it to our BibTeX file if it is not already there"""
+    with open(name_bibtex_file, 'a', encoding="utf8") as file:
+        file.write(name_bibtex_file_content.item.dump())
+    with open(name_bibtex_file, 'r', encoding="utf8") as file:
+        lines = dict.fromkeys(file.readlines())
+    with open(name_bibtex_file, 'w', encoding="utf8") as file:
+        file.writelines(lines)
+    name_bibtex_file_content.close()
+
 def open_arxiv_url():
     """Opens arXiv BibTeX file from its website"""
     for unknown_arxiv_key in check_missing_keys(arxiv_bibtex_file, arxiv_keys, 'arXiv'):
@@ -360,16 +370,9 @@ def open_arxiv_url():
             arxiv_bibtex_file_content.feed(res.read().decode('utf-8'))
             res.close()
 
-            with open(arxiv_bibtex_file, 'a', encoding="utf8") as file:
-                file.write(arxiv_bibtex_file_content.item.dump())
-                file.write('\n')
-            with open(arxiv_bibtex_file, 'r', encoding="utf8") as file:
-                lines = dict.fromkeys(file.readlines())
-            with open(arxiv_bibtex_file, 'w', encoding="utf8") as file:
-                file.writelines(lines)
-            arxiv_bibtex_file_content.close()
+            open_bibtex_file_parser(arxiv_bibtex_file, arxiv_bibtex_file_content)
 
-    print ('(Duplicate keys are not added to arXiV BibTeX file.)')
+    print ('(Duplicate keys were not added to arXiv BibTeX file.)')
 
 def open_cogprints_url():
     """Opens Cogprints BibTeX file from its website"""
@@ -377,6 +380,7 @@ def open_cogprints_url():
         print (f'{unknown_cogprints_key}')
 
         cogprints_url = f'https://web-archive.southampton.ac.uk/cogprints.org/cgi/export/eprint/{unknown_cogprints_key[10:]}.bib.html'
+        print(cogprints_url)
 
         with req.urlopen(cogprints_url) as res:
             cogprints_bibtex_file_content = res.read().decode('utf-8')
@@ -388,6 +392,7 @@ def open_dblp_url():
         print (f'{unknown_dblp_key}')
 
         dblp_url = f'https://dblp.org/rec/{unknown_dblp_key[5:]}.bib'
+        print(dblp_url)
 
         with req.urlopen(dblp_url) as res:
             dblp_bibtex_file_content = res.read().decode('utf-8')
@@ -398,7 +403,7 @@ def open_jstor_url():
     for unknown_jstor_key in check_missing_keys(jstor_bibtex_file, jstor_keys, 'JSTOR'):
         print (f'{unknown_jstor_key}')
 
-        jstor_url = f'https://www.jstor.org/citation/text/{unknown_jstor_key[12:]}'
+        jstor_url = f'https://www.jstor.org/citation/text/{unknown_jstor_key[6:]}'
 
         with req.urlopen(jstor_url) as res:
             jstor_bibtex_file_content = res.read().decode('utf-8')
@@ -410,6 +415,7 @@ def open_microsoft_url():
         print (f'{unknown_microsoft_key}')
 
         microsoft_url = f'https://www.microsoft.com/en-us/research/publication/{unknown_microsoft_key[10:]}/bibtex/'
+        print(microsoft_url)
 
         with req.urlopen(microsoft_url) as res:
             microsoft_bibtex_file_content = res.read().decode('utf-8')
@@ -421,6 +427,7 @@ def open_springer_url():
         print (f'{unknown_springer_key}')
 
         springer_url = f'https://citation-needed.springer.com/v2/references/10.1007/{unknown_springer_key[9:]}'
+        print(springer_url)
 
         with req.urlopen(springer_url) as res:
             springer_bibtex_file_content = res.read().decode('utf-8')
