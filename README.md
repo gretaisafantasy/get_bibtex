@@ -43,6 +43,17 @@ options:
 ```
 
 ## Configuration
+It is also possible to change the BibTeX input and output files through a configuration file. It should always start with **_[Defaults]_** for it to work.
+
+```
+
+[Defaults]
+c = c.bib
+d = d.bib
+
+```
+
+A short `test.cfg` and `test.txt` files are provided as examples.
 
 ## License
 
