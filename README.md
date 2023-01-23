@@ -43,7 +43,7 @@ options:
 ```
 
 ## Configuration
-It is also possible to change the BibTeX input and output files through a configuration file. It should always start with **_[Defaults]_** for it to work.
+It is also possible to change the BibTeX input and output files through a configuration file. The file header should always start with **_[Defaults]_** or otherwise it will not work.
 
 ```
 
@@ -53,7 +53,7 @@ d = d.bib
 
 ```
 
-A short `test.cfg` and `test.txt` files are provided as examples.
+A short `test.cfg`, `test.txt`, and `test.json` files are provided as examples, but other file formats will work too as a configuration file.
 
 ## License
 
