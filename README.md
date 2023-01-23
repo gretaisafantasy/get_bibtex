@@ -17,7 +17,7 @@ This script collects various online bibliographies ([arXiv](https://arxiv.org/),
 
 ### Installation
 
-You can also use get_bibtex.py as a standalone executable. Just copy it to somewhere in your path.
+You can use get_bibtex.py as a standalone executable. Just copy it to somewhere in your path.
 
 ## Usage
 
