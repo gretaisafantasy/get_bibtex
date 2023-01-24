@@ -52,7 +52,7 @@ options:
 ```
 
 ## Configuration
-It is also possible to change the BibTeX input and output files through a configuration file. Open a new file, write the configuration that you want, and save it. A short `test.cfg`, `test.txt`, and `test.json` files are provided as examples, but other file formats will work too as a configuration file.
+It is also possible to change the BibTeX input and output files through a configuration file. Open a new file, write the configuration that you want, and save it. A short `sample.cfg`, `sample.txt`, and `sample.json` files are provided as examples, but other file formats will work too as a configuration file.
 
 ### Example
 
