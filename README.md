@@ -23,7 +23,6 @@ You can use `get_bibtex.py` as a standalone executable. Just copy it to somewher
 
 ## Usage
 
-Fire up the `get_bibtex.py` script.
 
 ```
 
