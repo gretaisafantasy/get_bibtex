@@ -15,6 +15,7 @@
 - [Python 3](https://www.python.org/downloads/)
 - A LaTeX editor, such as TeXstudio, TeXmaker, TeXworks, etc.
 - A LaTeX distribution, such as MikTeX, MacTeX, TeX Live, etc.
+- Working Internet connection
 
 ### Installation
 
