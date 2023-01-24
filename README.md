@@ -20,7 +20,12 @@
 
 ### Installation
 
-You can use `get_bibtex.py` as a standalone executable. Just copy it to somewhere in your path.
+You can either: 
+- download the `get_bibtex` [ZIP](https://github.com/gretaisafantasy/get_bibtex/archive/refs/heads/main.zip) to your computer. Unzip the package, then move it to a new directory named after the package.
+
+OR
+
+- use `get_bibtex.py` as a standalone executable. Just copy it to somewhere in your path.
 
 ## Usage
 
@@ -59,7 +64,7 @@ d = d.bib
 
 ```
 
-The file header should always start with **_[Defaults]_** and the keys are the same as in the command line arguments. In the example above, the configuration means that you want to put Cogprints BibTeX input and output file into `c.bib` and DBLP BibTeX input and output file into `d.bib`.
+The file header should always start with **_[Defaults]_** and the keys are the same as in the command line arguments. In the example above, the configuration means that instead of the default BibTeX input and output file, you want to instead put Cogprints BibTeX input and output file into `c.bib` and DBLP BibTeX input and output file into `d.bib`.
 
 
 
