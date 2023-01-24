@@ -11,15 +11,19 @@
 
 ## Getting Started
 
-### Dependencies
+### Requirements
+- [Python 3](https://www.python.org/downloads/)
+- 
+- 
 
-[Python 3.10](https://www.python.org/downloads/)
 
 ### Installation
 
 You can use `get_bibtex.py` as a standalone executable. Just copy it to somewhere in your path.
 
 ## Usage
+
+Fire up the `get_bibtex.py` script.
 
 ```
 
