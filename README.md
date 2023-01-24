@@ -13,10 +13,10 @@
 ## Getting Started
 
 ### Requirements
-- [Python 3](https://www.python.org/downloads/)
+- [Python 3](https://www.python.org/downloads/), preferably either Python 3.8, 3.9, 3.10 or 3.11.
 - A LaTeX editor, such as TeXstudio, TeXmaker, TeXworks, etc.
 - A LaTeX distribution, such as MikTeX, MacTeX, TeX Live, etc.
-- Working Internet connection
+- A working Internet connection.
 
 ### Installation
 
