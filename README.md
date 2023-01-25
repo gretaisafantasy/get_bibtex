@@ -16,7 +16,7 @@
 - [Python 3](https://www.python.org/downloads/).
 - A LaTeX editor, such as [TeXstudio](https://www.texstudio.org/), [TeXmaker](https://www.xm1math.net/texmaker/), [TeXworks](https://www.tug.org/texworks/), etc.
 - A LaTeX distribution, such as [MikTeX](https://miktex.org/), [MacTeX](https://www.tug.org/mactex/), [TeX Live](https://www.tug.org/texlive/), etc.
-- A working Internet connection.
+- A working internet connection.
 
 ### Installation
 
