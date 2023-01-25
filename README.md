@@ -27,7 +27,7 @@ OR
 
 - use `get_bibtex.py` as a standalone executable. Just copy it to somewhere in your path.
 
-## Usage
+## Command Line Arguments
 
 
 ```
