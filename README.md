@@ -30,6 +30,8 @@ OR
 ## Command Line Arguments
 
 
+### Usage
+
 ```
 
 usage: cite.py [-h] [--config CONFIG] [--a A] [--b B] [--c C] [--d D] [--j J]
