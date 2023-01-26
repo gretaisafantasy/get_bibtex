@@ -27,6 +27,10 @@ OR
 
 - use `get_bibtex.py` as a standalone executable. Just copy it to somewhere in your path.
 
+## How to Use
+
+
+
 ## Command Line Arguments
 
 
@@ -53,8 +57,9 @@ options:
 
 ```
 
-## Configuration
-It is also possible to change the BibTeX input and output files through a configuration file. Open a new file, write the configuration that you want, and save it in the same directory as the `get_bibtex` script. A short `sample.cfg`, `sample.txt`, and `sample.json` files are provided as examples, but other file formats will work too as a configuration file.
+## Configuration File
+
+Open a new file, write the configuration that you want, and save it in the same directory as the `get_bibtex` script. As seen on the example below, the file header should always start with **_[Defaults]_** and the keys are the same as in the command line arguments. That particular configuration means that instead of the default BibTeX input and output file, you want to put Cogprints BibTeX input and output file into `c.bib` and DBLP BibTeX input and output file into `d.bib`.
 
 ### Example
 
@@ -66,9 +71,7 @@ d = d.bib
 
 ```
 
-The file header should always start with **_[Defaults]_** and the keys are the same as in the command line arguments. In the example above, the configuration means that instead of the default BibTeX input and output file, you want to instead put Cogprints BibTeX input and output file into `c.bib` and DBLP BibTeX input and output file into `d.bib`.
-
-
+Some short files named `sample.cfg`, `sample.txt`, and `sample.json` are also provided as examples, but other file formats will work too as a configuration file.
 
 ## License
 
