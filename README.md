@@ -21,7 +21,7 @@
 ### Installation
 
 You can either: 
-- download the `get_bibtex` [ZIP](https://github.com/gretaisafantasy/get_bibtex/archive/refs/heads/main.zip) to your computer. Unzip the package, then move it to a new directory named after the package.
+- download the [`get_bibtex` ZIP](https://github.com/gretaisafantasy/get_bibtex/archive/refs/heads/main.zip) to your computer. Unzip the package, then move it to a new directory named after the package.
 
 OR
 
@@ -29,12 +29,11 @@ OR
 
 ## How to Use
 
-
+There are two ways to change the default BibTeX input and output files. The first one is through the command line arguments and the second one is through a configuration file.
 
 ## Command Line Arguments
 
-
-### Usage
+The usage to create BibTeX input and output files for the command line arguments is given below. 
 
 ```
 
@@ -57,9 +56,13 @@ options:
 
 ```
 
+### Example
+
+If you want to put Cogprints BibTeX input and output file into `c.bib`, you just have to write `--c c.bib` as the command line argument.
+
 ## Configuration File
 
-Open a new file, write the configuration that you want, and save it in the same directory as the `get_bibtex` script. As seen on the example below, the file header should always start with **_[Defaults]_** and the keys are the same as in the command line arguments. That particular configuration means that instead of the default BibTeX input and output file, you want to put Cogprints BibTeX input and output file into `c.bib` and DBLP BibTeX input and output file into `d.bib`.
+Open a new file, write the configuration that you want, and save it in the same directory as the `get_bibtex` script.
 
 ### Example
 
@@ -71,7 +74,9 @@ d = d.bib
 
 ```
 
-Some short files named `sample.cfg`, `sample.txt`, and `sample.json` are also provided as examples, but other file formats will work too as a configuration file.
+As seen on the example above, the file header should always start with `[Defaults]` and the keys are the same as in the command line arguments. That particular configuration means that instead of the default BibTeX input and output file, you want to put Cogprints BibTeX input and output file into `c.bib` and DBLP BibTeX input and output file into `d.bib`.
+
+Some short files named [`sample.cfg`](https://github.com/gretaisafantasy/get_bibtex/blob/main/sample.cfg), [`sample.txt`](https://github.com/gretaisafantasy/get_bibtex/blob/main/sample.txt), and [`sample.json`] are also provided as examples, but other file formats will work too as a configuration file.
 
 ## License
 
