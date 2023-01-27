@@ -31,7 +31,7 @@ OR
 
 There are two ways to change the default BibTeX input and output files. The first one is through the command line arguments and the second one is through a configuration file.
 
-## Command Line Arguments
+## 1) Command Line Arguments
 
 The usage to create BibTeX input and output files for the command line arguments is given below. 
 
@@ -58,11 +58,11 @@ options:
 
 ### Example
 
-If you want to put Cogprints BibTeX input and output file into `c.bib`, you just have to write `--c c.bib` as the command line argument.
+If you want to put JSTOR BibTeX input and output file into `j.bib`, you just have to write `--j j.bib` as the command line argument.
 
-## Configuration File
+## 2) Configuration File
 
-Open a new file, write the configuration that you want, and save it in the same directory as the `get_bibtex` script.
+Open a new file, write the configuration that you want, save it in the same directory as the `get_bibtex` script, and load it through the command line argument with `--config` and the name and file format of the configuration file.
 
 ### Example
 
