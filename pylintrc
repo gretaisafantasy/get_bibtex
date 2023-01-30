@@ -2,7 +2,6 @@
 
 disable=abstract-method,
         line-too-long,
-        missing-module-docstring,
         no-else-return,
         too-many-branches,
 
