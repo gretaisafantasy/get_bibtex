@@ -112,7 +112,7 @@ d = d.bib
 
 As seen on the example above, the file header should always start with `[Defaults]` and the keys are the same as in the command line arguments. That particular configuration means that instead of the default BibTeX input and output file, you want to put Cogprints BibTeX input and output file into `c.bib` and DBLP BibTeX input and output file into `d.bib`.
 
-Some short files named [`sample.cfg`](https://github.com/gretaisafantasy/get_bibtex/blob/main/sample.cfg), [`sample.txt`](https://github.com/gretaisafantasy/get_bibtex/blob/main/sample.txt), and [`sample.json`] are also provided as examples. Keep in mind that besides the provided examples, other kind of file formats will work as a configuration file too.
+Some short files named [`sample.cfg`](https://github.com/gretaisafantasy/get_bibtex/blob/main/sample.cfg), [`sample.txt`](https://github.com/gretaisafantasy/get_bibtex/blob/main/sample.txt), and [`sample.json`](https://github.com/gretaisafantasy/get_bibtex/blob/main/sample.json) are also provided as examples. Keep in mind that besides the provided examples, other kind of file formats will work as a configuration file too.
 
 ## License
 
