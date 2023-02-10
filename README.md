@@ -53,7 +53,7 @@ Since `get_bibtex` is used when people write a paper and wants to cite another p
 | SpringerLink | https://link.springer.com/chapter/10.1007/978-3-031-04749-7_32 | \cite{Springer:978-3-031-04749-7_32?format=bibtex&flavour=citation} |
 | | https://link.springer.com/article/10.1007/s10115-022-01737-x | \cite{Springer:s10115-022-01737-x?format=bibtex&flavour=citation} |
 
-A LaTeX file named [example.tex](https://github.com/gretaisafantasy/get_bibtex/blob/main/example.tex), which contains all of the citations above, is also available as a reference. 
+A LaTeX file named [example.tex](https://github.com/gretaisafantasy/get_bibtex/blob/main/example.tex) and the resulting PDF named [example.pdf](https://github.com/gretaisafantasy/get_bibtex/blob/main/example.pdf), which contain all of the citations above, are also available as a reference. 
 
 Make sure that all of the TeX files that you want to use are in the same directory as the `get_bibtex` script before running it.
 
