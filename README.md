@@ -57,7 +57,7 @@ A LaTeX file named [example.tex](https://github.com/gretaisafantasy/get_bibtex/b
 
 Make sure that all of the TeX files that you want to use are in the same directory as the `get_bibtex` script before running it.
 
-The software does not erase or modify existing BibTeX entries, so it will only automatically append the downloaded missing BibTeX records to the default BibTeX files, which are separate BibTeX files for each of the bibliographies according to the website's name.
+The software does not erase or modify existing BibTeX entries, so it will only automatically append the downloaded missing BibTeX records to the default BibTeX files, which are separate BibTeX files for each of the bibliographies according to the websites' name.
 
 ### Example
 
