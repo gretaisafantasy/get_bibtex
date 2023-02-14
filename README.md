@@ -29,7 +29,7 @@ OR
 
 ## How to Use
 
-Since `get_bibtex` is used when people write a paper and wants to cite another paper from one or more of the online bibliography websites, it is imperative to write the correct citations in LaTeX. Some examples of how to write the citations in LaTeX for the various bibliography websites are given in the table below. Essentially, all of the citations always start with the (first) name of the website and followed by some parts of the URL path.
+Since `get_bibtex` is used when people write a paper and wants to cite another paper from one or more of the online bibliography websites, it is imperative to write the correct citations in LaTeX. Some examples of how to write the citations in LaTeX for the various bibliography websites are given in the table below. Essentially, all the citations always start with the (first) name of the website and followed by some parts of the URL path.
 
 | Website Name  | Website URL | Citation |
 | :---: | :---: | :--- |
@@ -57,7 +57,7 @@ A LaTeX file named [example.tex](https://github.com/gretaisafantasy/get_bibtex/b
 
 Make sure that all of the TeX files that you want to use are in the same directory as the `get_bibtex` script before running it.
 
-The software does not erase or modify existing BibTeX entries, so it will only automatically append the downloaded missing BibTeX records to the default BibTeX files, which are separate BibTeX files for each of the bibliographies according to the websites' name.
+The software does not erase or modify existing BibTeX entries, so it will only automatically append the downloaded missing BibTeX records to the default BibTeX files, which are separate BibTeX files for each of the bibliographies according to the website's name.
 
 ### Example
 
