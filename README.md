@@ -48,8 +48,8 @@ Since `get_bibtex` is used when people write a paper and wants to cite another p
 | | https://www.jstor.org/stable/24873277 | \cite{JSTOR:24873277} |
 | | https://www.jstor.org/stable/resrep25198 | \cite{JSTOR:resrep25198} |
 | | https://www.jstor.org/stable/j.ctv3znzfk | \cite{JSTOR:j.ctv3znzfk} |
-| Microsoft Research | https://www.microsoft.com/en-us/research/publication/approximability-budgeted-allocations-improved-lower-bounds-submodular-welfare-maximization-gap/bibtex/ | \cite{Microsoft:approximability-budgetedallocations-improvedlower-boundssubmodular-welfaremaximization-gap} |
-| | https://www.microsoft.com/en-us/research/publication/citeseerx-ai-digital-library-search-engine/bibtex/ | \cite{Microsoft:citeseerxai-digital-library-searchengine} |
+| Microsoft Research | https://www.microsoft.com/en-us/research/publication/approximability-budgeted-allocations-improved-lower-bounds-submodular-welfare-maximization-gap/ | \cite{Microsoft:approximability-budgetedallocations-improvedlower-boundssubmodular-welfaremaximization-gap} |
+| | https://www.microsoft.com/en-us/research/publication/citeseerx-ai-digital-library-search-engine/ | \cite{Microsoft:citeseerxai-digital-library-searchengine} |
 | SpringerLink | https://link.springer.com/chapter/10.1007/978-3-031-04749-7_32 | \cite{Springer:978-3-031-04749-7_32?format=bibtex&flavour=citation} |
 | | https://link.springer.com/article/10.1007/s10115-022-01737-x | \cite{Springer:s10115-022-01737-x?format=bibtex&flavour=citation} |
 
